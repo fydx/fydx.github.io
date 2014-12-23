@@ -1,0 +1,1154 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第 2 页 | 归档 | fydx&#39;s area</title>
+  <meta name="author" content="fydx">
+  
+  <meta name="description" content="java | android | fydx">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="fydx&#39;s area"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="fydx&#39;s area" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40790188-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">fydx&#39;s area</a></h1>
+  <h2><a href="/">码</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+<h2 class="archive-title">归档</h2>
+
+
+  
+    <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-12T04:55:49.000Z"><a href="/2014/05/12/java接口相关/">5月 12 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/12/java接口相关/">java接口相关</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>接口是Java里面很常用的一个特性，接口的作用是用来定义一个规范，让其他的类实现这个接口，让我们明确，这个类实现了这个接口，可以做这个事情。</p>
+<p>举个例子，我们中午在街上，肚子饿了，附近有很多写着“餐厅”招牌的地方。那么这些地方实际上就是实现了“有吃的东西卖”这个接口，告诉我们这个地方有饭吃。至于里面的饭是什么，好不好吃，那么就是看各家的实现了。</p>
+<p>我们来按这个例子写一个代码</p>
+<p>我们定义了一个接口SellFood，创建两个类DumplingRestaurant和NoodleResuaurant去实现这个接口，创建一个Person可以去买食物</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">interfaceTest</span> </span>{
+
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SellFood</span>
+</span>{
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sell</span>();
+
+}
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DumplingRestaurant</span> <span class="keyword">implements</span> <span class="title">SellFood</span>
+</span>{
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sell</span>()
+    {
+        System.out.print(<span class="string">"Sell Dumplings Here"</span> + <span class="string">"\n"</span>);
+    }
+
+}
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NoodleRestaurant</span> <span class="keyword">implements</span> <span class="title">SellFood</span>
+</span>{
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sell</span>()
+    {
+        System.out.print(<span class="string">"Sell Noodle Here"</span> + <span class="string">"\n"</span>);
+    }
+}
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span>
+</span>{
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buy</span>(SellFood sellFood)
+    {
+        sellFood.sell();
+    }
+}
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args)
+{
+    interfaceTest interfaceTest =  <span class="keyword">new</span> interfaceTest();
+    DumplingRestaurant dumplingRestaurant = interfaceTest.<span class="keyword">new</span> DumplingRestaurant();
+    NoodleRestaurant noodleRestaurant = interfaceTest.<span class="keyword">new</span> NoodleRestaurant();
+    Person person = interfaceTest.<span class="keyword">new</span> Person();
+    person.buy(dumplingRestaurant);
+    person.buy(noodleRestaurant);
+}
+
+}
+</code></pre><p>从这个代码我们可以看出来，Person是去“可以买的东西地方”买东西，没必要去关心这里到底是卖什么东西，只要这个地方实现了SellFood的接口就可以被传入到buy这个方法里面</p>
+<p>接口最典型的应用就是Comparable和Comparator了</p>
+<h4 id="对于Comparable来说：">对于Comparable来说：</h4>
+<p>实现Comparable，就需要类里面实现compareTo方法，明确这个类是可以被排序的，当这个类被加载到某个集合（比如数组或者List中）的时候，可以使用Collections.sort()和Arrays.sort()排序</p>
+<p>compareTo方法可以这样子调用</p>
+<pre><code>    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span>(Person person) {
+        <span class="keyword">return</span> <span class="keyword">this</span>.age - person.age;
+    }
+</code></pre><p> 返回 &gt;0  =0 &lt;0 的数以说明该对象相对于另外一个对象大于，等于，或者小于</p>
+<h4 id="对于Comparator来说：">对于Comparator来说：</h4>
+<p>Comparable是在类内部来实现的，而Comparator是在集合的外部实现的，Comparator不需要在类的内部去定义，在类的外部创建即可</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">AgeComparator</span> <span class="keyword">implements</span> <span class="title">Comparator</span>&lt;<span class="title">Person</span>&gt; </span>{
+
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span>(Person p1, Person p2) {
+    <span class="keyword">return</span> p1.getAge() - p2.getAge();
+}
+}
+</code></pre><p>使用Comparator的时候需要这样写：</p>
+<pre><code> ArrayList&lt;Person&gt; persons = <span class="keyword">new</span> ArrayList&lt;Person&gt;();
+ person.<span class="built_in">add</span>(<span class="string">"12"</span>);
+ // 增加几个元素之后
+ Collections.<span class="built_in">sort</span>(persons, comparator);
+</code></pre><p>PS. 写Restaurant这个程序的时候有个小插曲，如果我们直接写<code>DumplingRestaurant dumplingRestaurant = new DumplingRestaurant();</code> 会报错</p>
+<blockquote>
+<p>No enclosing instance of type interfaceTest is accessible. Must qualify the allocation with an enclosing instance of type interfaceTest (e.g. x.new A() where x is an instance of interfaceTest).</p>
+</blockquote>
+<p>这个意思是，必须先进行外部类的实例化，才能通过外部类来引用内部类。因为两个Restautant和Person都是内部类，所以我们必须先进行外部类的实例化，用这种方式来创建对象才行：</p>
+<pre><code>interfaceTest interfaceTest =  <span class="keyword">new</span> interfaceTest();
+    DumplingRestaurant dumplingRestaurant = interfaceTest.<span class="keyword">new</span> DumplingRestaurant();
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-11T15:45:31.000Z"><a href="/2014/05/11/分治法的一道题/">5月 11 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/11/分治法的一道题/">分治法的一道题</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h4 id="题目：">题目：</h4>
+<blockquote>
+<p>Give a divide and conquer algorithm for the following problem: you are given two sorted lists of size m and n, and are allowed unit time access to the ith element of each list. Give an O(lg m + lgn) time algorithm for computing the kth largest element in the union of the two lists. (For simplicity, you can assume that the elements of the two lists are distinct).</p>
+</blockquote>
+<p>翻译过来，就是说，使用分治法解决一个问题：给两个已经排序好的数组，如何找出对于这两个数组合并、排序之后来说第k大的元素，要求时间复杂度为O(logm+logn)</p>
+<p>这个问题最直接的方法就是用归并排序，生成一个新的数组（毕竟数据源是两个有序数组），然后对新的数组遍历到k，返回这个数，结束，这种方法简单粗暴，但是我们有更好的方法。</p>
+<p>我们可以不去选择做“排序”这个动作，排序消耗大量时间，而归并排序又需要消耗大量的空间。我们来用另外一种方式来考虑这个问题。</p>
+<p>首先，我们对比一下A[k/2-1]和B[k/2-1]的值：</p>
+<ul>
+<li>如果A[k/2-1]&lt;B[k/2-1],那么A[0]-A[k/2-1]这些值都可以被忽略掉了<blockquote>
+<p>假设不能忽略，即A∪B[K-1]就在A[0…K/2-1]里面，取最大值A[K/2-1]为A∪B[K-1]。<br>由此则B中必定有K/2个元素小于A[K/2-1]，而又因为A[K/2-1] &lt; B[K/2-1]，故假设不成立。</p>
+</blockquote>
+</li>
+<li>如果A[k/2-1]&gt;B[k/2-1],那么同理，B[0]-B[k/2-1]这些值夜都可以被忽略掉了</li>
+<li>如果A[k/2-1] = B[k/2-1],那么我们就找到了我们想要的那个值了</li>
+</ul>
+<p>如果A[k/2-1]和B[k/2-1]不相等，我们就可以去掉K/2个元素</p>
+<p>接下来，A或者B变为去掉K/2的元素的新数组，比如如果A[k/2-1]&lt;B[k/2-1]，那么 A= A[k/2] - A[A.length]</p>
+<p>然后，K = K - K/2 ,因为我们已经去掉了k/2个元素（这样写是因为比K = K/2更好理解一些）</p>
+<p>一直递归下去，执行A和B数组中某个元素的比较，直到A或者B数组长度为0或者1。</p>
+<p>如果为0，那么就取另外一个数组的下标为k/2的元素即可，如果是1，那么就取A[0]和B[0]中比较小的元素。</p>
+<p>实际代码：</p>
+<pre><code> int find(int[] <span class="literal">A</span>, int[] B, int k) {
+    //避免<span class="literal">A</span>或者B是个空的
+    <span class="keyword">if</span> (<span class="literal">A</span>.length == <span class="number">0</span>) <span class="keyword">return</span> B[k - <span class="number">1</span>]<span class="comment">;</span>
+    <span class="keyword">if</span> (B.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">A</span>[k - <span class="number">1</span>]<span class="comment">;</span>
+    //递归到k =<span class="number">1</span>的情况
+    <span class="keyword">if</span> (k == <span class="number">1</span>) <span class="keyword">return</span> Math.min(<span class="literal">A</span>[<span class="number">0</span>], B[<span class="number">0</span>])<span class="comment">;</span>
+    //如果<span class="literal">A</span>比B还长的话...
+    <span class="keyword">if</span> (<span class="literal">A</span>.length &gt; B.length) <span class="keyword">return</span> find(B, <span class="literal">A</span>, k)<span class="comment">;</span>
+    //如果k/<span class="number">2</span>比<span class="literal">a</span>的长度还要长，那么就取<span class="literal">A</span>的长度
+    int <span class="literal">a</span> = Math.min(<span class="literal">A</span>.length,k/<span class="number">2</span>)<span class="comment">;</span>
+    int b = k - <span class="literal">a</span><span class="comment">;</span>
+    //我们的主要步骤
+    <span class="keyword">if</span> (<span class="literal">A</span>[<span class="literal">a</span>-<span class="number">1</span>] &lt; B[b-<span class="number">1</span>]) {
+        <span class="keyword">return</span> find(Arrays.copyOfRange(<span class="literal">A</span>, <span class="literal">a</span>, <span class="literal">A</span>.length), B, k - <span class="literal">a</span>)<span class="comment">;</span>
+    } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="literal">A</span>[<span class="literal">a</span>-<span class="number">1</span>] &gt; B[b-<span class="number">1</span>]) {
+        <span class="keyword">return</span> find(<span class="literal">A</span>, Arrays.copyOfRange(B, b, B.length), k - b)<span class="comment">;</span>
+    } <span class="keyword">else</span> {
+        <span class="keyword">return</span> <span class="literal">A</span>[<span class="literal">a</span>-<span class="number">1</span>]<span class="comment">;</span>
+    }
+}
+</code></pre><p>我们来看看分治法具体的三个步骤的体现:</p>
+<ul>
+<li>分 —— A或者B的下标为K/2-1前面的部分和后面的部分分别处理，递归到A或者B数组里面只剩下0或者1个元素</li>
+<li>治 —— 比较A[k/2-1]和B[k/2-1]的值，大于、小于、等于分别有三种的处理方法</li>
+<li>合 —— 感觉这里体现的不是很明显，最后返回的是一个值，没有具体的合并过程</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-11T07:01:59.000Z"><a href="/2014/05/11/算法-分治法/">5月 11 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/11/算法-分治法/">算法-分治法在归并排序和快速排序中的体现</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>分治法，就是把一个大的问题分解成若干个子问题，子问题可以进一步分解为更小的子问题，直到问题分解为一个可以直接求解的子问题，然后把子问题的解合并即可得到大问题的解，分而治之，各个击破。基本上分治法都得基于递归去解决。</p>
+<p>分治法保持分、治、合三个步骤求解。</p>
+<p>分治法在归并排序和快速排序得到具体的体现，我们来研究一下</p>
+<h3 id="归并排序">归并排序</h3>
+<p>以下代码引自维基百科-归并排序</p>
+<pre><code>public <span class="keyword">static</span> <span class="type">int</span>[] mergeSort(<span class="type">int</span>[] arr){//归并排序 --递归
+<span class="keyword">if</span>(arr.length==<span class="number">1</span>){
+    <span class="keyword">return</span> arr;
+}
+<span class="type">int</span> half = arr.length/<span class="number">2</span>;
+<span class="type">int</span>[] arr1 = new <span class="type">int</span>[half];
+<span class="type">int</span>[] arr2 = new <span class="type">int</span>[arr.length-half];
+<span class="type">System</span>.arraycopy(arr, <span class="number">0</span>, arr1, <span class="number">0</span>, arr1.length);
+<span class="type">System</span>.arraycopy(arr, half, arr2, <span class="number">0</span>, arr2.length);
+arr1 = mergeSort(arr1);
+arr2 = mergeSort(arr2);
+<span class="keyword">return</span> mergeSortSub(arr1,arr2);
+}
+
+private <span class="keyword">static</span> <span class="type">int</span>[] mergeSortSub(<span class="type">int</span>[] arr1,<span class="type">int</span>[] arr2){//归并排序子程序
+<span class="type">int</span>[] <span class="literal">result</span> = new <span class="type">int</span>[arr1.length+arr2.length];
+<span class="type">int</span> i = <span class="number">0</span>;
+<span class="type">int</span> j = <span class="number">0</span>;
+<span class="type">int</span> k = <span class="number">0</span>;
+<span class="keyword">while</span>(<span class="literal">true</span>){
+    <span class="keyword">if</span>(arr1[i] &lt; arr2[j]){
+        <span class="literal">result</span>[k] = arr1[i];
+        <span class="keyword">if</span>(++i&gt;arr1.length-<span class="number">1</span>){
+            <span class="keyword">break</span>;
+        }
+    }<span class="keyword">else</span>{
+        <span class="literal">result</span>[k] = arr2[j];
+        <span class="keyword">if</span>(++j&gt;arr2.length-<span class="number">1</span>){
+            <span class="keyword">break</span>;
+        }
+    }
+    k++;
+}
+<span class="keyword">for</span>(;i&lt;arr1.length;i++){
+    <span class="literal">result</span>[++k] = arr1[i];
+}
+<span class="keyword">for</span>(;j&lt;arr2.length;j++){
+    <span class="literal">result</span>[++k] = arr2[j];
+}
+<span class="keyword">return</span> <span class="literal">result</span>;
+}
+</code></pre><p>我们来具体看看是如何“分治“是如何在归并排序里面体现的</p>
+<ol>
+<li>首先我们要理解归并排序的做法：简单的说，就是把两个已经排序完毕的数组合并成一个有序数组。 形象一点说，就是把两摞已经排好顺序的扑克牌合并成一摞。 假设这两摞牌都是升序排列（也就是说最上面的牌是最小的），那么，做这个排序的事情的时候，我们比较两摞牌最上面的牌的大小，把比较小的放在另外一摞的第一个，然后继续做比较，把小的放在新的牌堆底，直到某一摞牌都被放完了，空了，我们把另外一摞所有的牌都放在新的牌堆的底部。</li>
+<li>在算法上，首先我们把一个数组平分为两部分，我们称之为arr1和arr2，我们开始进行递归，将arr1和arr2无限的分解，直到他们只被分解的剩下了1个元素，而每次递归的子程序都会执行归并排序</li>
+<li>我们设定一个归并排序的子程序，传入两个数组，进行归并排序。我们开辟一个数组<code>int[] result = new int[arr1.length+arr2.length];</code>，长度是传入的两个数组长度之和。我们开启三个变量，i，j，k。 i的意义是传入第一个数组遍历到的位置，j为传入的第二个数组遍历到的位置，k是我们开辟的新数组指向的位置。接下来的操作就跟我们开始的时候说的“扑克牌”的操作类似，把传入两个数组大的那个数放到我们新开辟的数组里面，直到某个数组里面没有元素了（i或者j等于所指向的数组的长度），跳出循环，将没遍历完的数组的所有元素加入到新开辟的数组中，把新开辟的数组返回，归并排序子程序结束。</li>
+<li>到现在，整个流程就比较清晰了，分解为直到数组里面剩了1个元素，从这里开始进行排序（1个数字肯定是有序的），接下来是两个数字的归并排序，3个数字的归并排序，以此类推，最终执行完整个数组的归并排序。</li>
+</ol>
+<p>我们来看一下分、治、和在归并排序里面的具体体现：</p>
+<ul>
+<li>分 —— 分在归并排序里面就是无限把一个数组分成两个数组，直到分成的新数组里面剩了1个元素</li>
+<li>治 —— 主要是指归并排序子程序中对比两个数组i/j所指的大小，并加入到新数组中</li>
+<li>合 —— 在归并排序子程序中两个有序数组合并成一个有序数组，并返回</li>
+</ul>
+<h3 id="快速排序">快速排序</h3>
+<p>相同的道理，快速排序也是类似的实现方式</p>
+<pre><code><span class="keyword">public</span> static void quicksort(<span class="built_in">int</span> n[], <span class="built_in">int</span> <span class="built_in">left</span>, <span class="built_in">int</span> <span class="built_in">right</span>) {
+    <span class="built_in">int</span> dp;
+    <span class="keyword">if</span> (<span class="built_in">left</span> &lt; <span class="built_in">right</span>) {
+        dp = partition(n, <span class="built_in">left</span>, <span class="built_in">right</span>);
+        quicksort(n, <span class="built_in">left</span>, dp - <span class="number">1</span>);
+        quicksort(n, dp + <span class="number">1</span>, <span class="built_in">right</span>);
+    }
+}
+
+<span class="keyword">public</span> static <span class="built_in">int</span> partition(<span class="built_in">int</span> n[], <span class="built_in">int</span> <span class="built_in">left</span>, <span class="built_in">int</span> <span class="built_in">right</span>) {
+    <span class="built_in">int</span> pivot = n[<span class="built_in">left</span>];
+    <span class="keyword">while</span> (<span class="built_in">left</span> &lt; <span class="built_in">right</span>) {
+        <span class="keyword">while</span> (<span class="built_in">left</span> &lt; <span class="built_in">right</span> &amp;&amp; n[<span class="built_in">right</span>] &gt;= pivot)
+            <span class="built_in">right</span>--;
+        <span class="keyword">if</span> (<span class="built_in">left</span> &lt; <span class="built_in">right</span>)
+            n[<span class="built_in">left</span>++] = n[<span class="built_in">right</span>];
+        <span class="keyword">while</span> (<span class="built_in">left</span> &lt; <span class="built_in">right</span> &amp;&amp; n[<span class="built_in">left</span>] &lt;= pivot)
+            <span class="built_in">left</span>++;
+        <span class="keyword">if</span> (<span class="built_in">left</span> &lt; <span class="built_in">right</span>)
+            n[<span class="built_in">right</span>--] = n[<span class="built_in">left</span>];
+    }
+    n[<span class="built_in">left</span>] = pivot;
+    return <span class="built_in">left</span>;
+}
+</code></pre><p>快速排序的步骤可以这样子理解：</p>
+<ol>
+<li>在数组里面挑选出来一个元素，作为基准（pivot），这里挑这个元素，这里的可以选择挑选第一个。不过，最好是随机的选一个，做一个随机化快速排序，因为挑选的基准会影响到排序的效率，如果说挑选的是一个元素恰好是有序数组的第一个或者最后一个，会造成快速排序的最坏情况（O(n^2)）。</li>
+<li>把数组里面比基准值大的元素放在后边，比基准值小的放在前面，相同的放在任意一边。</li>
+<li>把基准值左边和右边的数组再当成一个新的数组，从第一步开始执行，直到递归到最后数组的大小是0或者1。</li>
+</ol>
+<p>最后，我们来看一下在快速排序里面分治法的体现</p>
+<ul>
+<li>分 —— 基准元素左右两边各作为一个子数组</li>
+<li>治 —— 体现在partition中，分区，返回一个基准值所对应的位置</li>
+<li>合 —— 所有的操作实际上都是在原始数组中做的操作，直接会返回这个排序好的数组</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-10T13:32:40.000Z"><a href="/2014/05/10/socket相关/">5月 10 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/10/socket相关/">Socket相关</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Socket是网络交互主要使用的一种方式，我们用一个例子来说明。</p>
+<p>这是一个QQ客户端，分为服务器端和客户端</p>
+<p>服务器端代码如下</p>
+<pre><code><span class="keyword">package</span> chat;  
+
+<span class="keyword">import</span> java.io.BufferedReader;  
+<span class="keyword">import</span> java.io.IOException;  
+<span class="keyword">import</span> java.io.InputStreamReader;  
+<span class="keyword">import</span> java.io.PrintWriter;  
+<span class="keyword">import</span> java.net.ServerSocket;  
+<span class="keyword">import</span> java.net.Socket;  
+<span class="keyword">import</span> java.util.ArrayList;  
+<span class="keyword">import</span> java.util.List;  
+<span class="keyword">import</span> java.util.concurrent.ExecutorService;  
+<span class="keyword">import</span> java.util.concurrent.Executors;  
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">chat</span> </span>{  
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PORT = <span class="number">8888</span>; <span class="comment">// 端口号  </span>
+    <span class="keyword">private</span> <span class="keyword">static</span> List&lt;Socket&gt; list = <span class="keyword">new</span> ArrayList&lt;Socket&gt;(); <span class="comment">// 保存连接对象</span>
+    <span class="keyword">private</span> ExecutorService exec;
+    <span class="keyword">private</span> ServerSocket server;
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args) {  
+    <span class="keyword">new</span> chat();  
+}  
+
+<span class="keyword">public</span> <span class="title">chat</span>() {  
+    <span class="keyword">try</span> {  
+        server = <span class="keyword">new</span> ServerSocket(PORT);  
+        exec = Executors.newCachedThreadPool();  
+        System.out.println(<span class="string">"服务器已启动！"</span>);  
+
+        Socket client = <span class="keyword">null</span>;  
+        <span class="keyword">while</span> (<span class="keyword">true</span>) {  
+            client = server.accept(); <span class="comment">// 接收客户连接  </span>
+            list.add(client);  
+            exec.execute(<span class="keyword">new</span> ChatTask(client));  
+        }  
+    } <span class="keyword">catch</span> (IOException e) {  
+        e.printStackTrace();  
+    }  
+}  
+
+<span class="keyword">static</span> class ChatTask implements Runnable {  
+    <span class="keyword">private</span> Socket socket;  
+    <span class="keyword">private</span> BufferedReader br;  
+    <span class="keyword">private</span> PrintWriter pw;  
+    <span class="keyword">private</span> String msg;  
+
+    <span class="keyword">public</span> <span class="title">ChatTask</span>(Socket socket) <span class="keyword">throws</span> IOException {  
+        <span class="keyword">this</span>.socket = socket;  
+        br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket  
+                .getInputStream()));  
+        msg = <span class="string">"【"</span> + <span class="keyword">this</span>.socket.getInetAddress() + <span class="string">"】进入聊天室！当前聊天室有【"</span>  
+                + list.size() + <span class="string">"】人"</span>;  
+
+        sendMessage();  
+    }  
+
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span>() {  
+        <span class="keyword">try</span> {  
+            <span class="keyword">while</span> ((msg = br.readLine()) != <span class="keyword">null</span>) {  
+                <span class="keyword">if</span> (msg.trim().equals(<span class="string">"bye"</span>)) {  
+                    list.remove(socket);  
+                    br.close();  
+                    pw.close();  
+                    msg = <span class="string">"【"</span> + socket.getInetAddress() + <span class="string">"】离开聊天室！当前聊天室有【"</span>  
+                            + list.size() + <span class="string">"】人"</span>;  
+                    socket.close();  
+
+                    sendMessage();  
+                    <span class="keyword">break</span>;  
+                } <span class="keyword">else</span> {  
+                    msg = <span class="string">"【"</span> + socket.getInetAddress() + <span class="string">"】说："</span> + msg;  
+                    sendMessage();  
+                }  
+            }  
+        } <span class="keyword">catch</span> (IOException e) {  
+            e.printStackTrace();  
+        }  
+    }  
+
+    <span class="javadoc">/** 
+     * 群发消息给聊天室的所有人 
+     */</span>  
+    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendMessage</span>() <span class="keyword">throws</span> IOException {  
+        System.out.println(msg);  
+        <span class="keyword">for</span> (Socket client : list) {  
+            pw = <span class="keyword">new</span> PrintWriter(client.getOutputStream(), <span class="keyword">true</span>);  
+            pw.println(msg);  
+        }  
+    }  
+}  
+}  
+</code></pre><p>客户端代码如下：</p>
+<pre><code><span class="keyword">package</span> client;
+
+<span class="keyword">import</span> java.io.BufferedReader;  
+<span class="keyword">import</span> java.io.InputStreamReader;  
+<span class="keyword">import</span> java.io.PrintWriter;  
+<span class="keyword">import</span> java.net.Socket;  
+<span class="keyword">import</span> java.util.concurrent.ExecutorService;  
+<span class="keyword">import</span> java.util.concurrent.Executors;  
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">client</span> </span>{  
+<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PORT = <span class="number">8888</span>;  
+<span class="keyword">private</span> <span class="keyword">static</span> ExecutorService exec = Executors.newCachedThreadPool();  
+
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args) <span class="keyword">throws</span> Exception {  
+    <span class="keyword">new</span> client();  
+}  
+
+<span class="keyword">public</span> <span class="title">client</span>() {  
+    <span class="keyword">try</span> {  
+        Socket socket = <span class="keyword">new</span> Socket(<span class="string">"192.168.1.100"</span>, PORT);
+        exec.execute(<span class="keyword">new</span> Sender(socket));
+        System.out
+                .println(<span class="string">"【"</span> + socket.getInetAddress() + <span class="string">"】您好，欢迎来到聊天室！"</span>);
+
+        BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket
+                .getInputStream()));
+        String msg;
+            <span class="keyword">while</span> ((msg = br.readLine()) != <span class="keyword">null</span>) {
+                System.out.println(msg);
+            }
+    } <span class="keyword">catch</span> (Exception e) {  
+
+    }  
+}  
+
+<span class="javadoc">/** 
+ * 客户端线程获取控制台输入消息 
+ */</span>  
+<span class="keyword">static</span> class Sender implements Runnable {  
+    <span class="keyword">private</span> Socket socket;  
+
+    <span class="keyword">public</span> <span class="title">Sender</span>(Socket socket) {  
+        <span class="keyword">this</span>.socket = socket;  
+    }  
+
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span>() {  
+        <span class="keyword">try</span> {  
+            BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(  
+                    System.in));  
+            PrintWriter pw = <span class="keyword">new</span> PrintWriter(socket.getOutputStream(), <span class="keyword">true</span>);  
+            String msg;  
+
+            <span class="keyword">while</span> (<span class="keyword">true</span>) {  
+                msg = br.readLine();  
+                pw.println(msg);  
+
+                <span class="keyword">if</span> (msg.trim().equals(<span class="string">"bye"</span>)) {  
+                    pw.close();  
+                    br.close();  
+                    exec.shutdownNow();  
+                    <span class="keyword">break</span>;  
+                }  
+            }  
+        } <span class="keyword">catch</span> (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }  
+}  
+}  
+</code></pre><h4 id="我们首先从服务器端说起">我们首先从服务器端说起</h4>
+<ol>
+<li><p>我们首先遇到的是ServerSocket这个类，ServerSocket负责建立对某个端口，我们以8888作为我们开启的端口号</p>
+<pre><code><span class="keyword">int</span> PORT = <span class="number">8888</span>；
+<span class="keyword">server</span> = <span class="keyword">new</span> ServerSocket(PORT);
+</code></pre></li>
+<li><p>接下来是一个线程池,用来接收用户的连接<br>cachedThreadPool 是一个缓冲线程池，可以重用以前构造的线程，如果没有可用的就重新构建一个，缓冲线程池会终止并从池里面移除60秒未被使用的线程</p>
+<p>   ExecutorService exec = Executors.newCachedThreadPool()</p>
+</li>
+<li><p>再往下，调用的是一个ServerSocket的accept方法，返回的是一个Socket对象，我们把这个Sokcet加入到一个List中，并且开启一个ChatTask线程以处理相关事务<br>关于Socket的发送我们会在客户端的相关再详述</p>
+</li>
+<li><p>关于ChatTask，输出信息和读取Socket的流数据都会在这里进行</p>
+<pre><code><span class="keyword">br</span> = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket
+             .getInputStream()));
+</code></pre><p> 上面这个代码把Socket的输入字节流封装成InputStreamReader，编程字符输入流，最终用BufferedReader来从字符输入流中读取相关字符。</p>
+<pre><code><span class="attribute">msg </span>=<span class="string"> br.readLine()   </span>
+</code></pre><p>  这样子即可最终拿到客户端发送来的内容</p>
+</li>
+<li><p>向所有客户端发送消息</p>
+<p>这里我们来读取到已经连接到服务端的所有客户端的Socket，获取PrintWriter向所有的客户端打印（输出）消息</p>
+<pre><code><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendMessage</span>() <span class="keyword">throws</span> IOException {  
+     <span class="keyword">for</span> (Socket client : list) {  
+         pw = <span class="keyword">new</span> PrintWriter(client.getOutputStream(), <span class="keyword">true</span>);  
+         pw.println(msg);  
+     }  
+ }
+</code></pre></li>
+</ol>
+<h4 id="接下来是客户端相关">接下来是客户端相关</h4>
+<p>客户端这里相对简单一些：</p>
+<ol>
+<li><p>首先我们要明确服务端的ip和端口，这里以192.168.1.100为ip，8888为开启的端口</p>
+</li>
+<li><p>我们新建一个Socket对象</p>
+<pre><code><span class="keyword">Socket</span> socket = new <span class="keyword">Socket</span>(<span class="string">"192.168.1.100"</span>, <span class="number">8888</span>);
+</code></pre></li>
+<li><p>我们还是可以去使用一个线程池，去获取控制台的相关信息</p>
+<pre><code>ExecutorService <span class="keyword">exec</span> = Executors.newCachedThreadPool()
+</code></pre></li>
+<li><p>客户端需要把自己输入的东西显示在自己的控制台上，这里基本上和服务端做的事情一样，读取Socket里面的内容，只不过这次读取的是客户端自己的Socket，而不是接收的</p>
+<pre><code>BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket
+            .getInputStream()));
+    String msg;
+        <span class="keyword">while</span> ((msg = br.readLine()) != <span class="keyword">null</span>) {
+            System.<span class="keyword">out</span>.println(msg);
+        }
+</code></pre></li>
+<li><p>核心的部分在Sender这个线程里面，我们所做的事情就是获取PrintWriter，向Socket里面打印（输入）我们的数据</p>
+<pre><code> <span class="type">BufferedReader</span> br = <span class="keyword">new</span> <span class="type">BufferedReader</span>(<span class="keyword">new</span> <span class="type">InputStreamReader</span>(<span class="type">System</span>.<span class="keyword">in</span>));  
+ <span class="type">PrintWriter</span> pw = <span class="keyword">new</span> <span class="type">PrintWriter</span>(socket.getOutputStream(), <span class="built_in">true</span>);  
+         <span class="type">String</span> msg;  
+         <span class="keyword">while</span> (<span class="built_in">true</span>) {  
+             msg = br.readLine();  
+             pw.<span class="built_in">println</span>(msg);  
+
+         }  
+</code></pre></li>
+<li><p>关闭连接，我们这类设定的是输入bye就关闭Socket连接，关闭PrintWriter、Socket和线程池</p>
+<pre><code>    <span class="keyword">if</span> (msg.trim().equals(<span class="string">"bye"</span>)) {  
+                 pw.<span class="keyword">close</span>();  
+                 br.<span class="keyword">close</span>();  
+                 <span class="keyword">exec</span>.shutdownNow();  
+                 <span class="keyword">break</span>;  
+             }  
+</code></pre></li>
+</ol>
+<h5 id="对于网络交互，最重要的是理解Socket的相关传输机制，发送，打印，输入流输出流。我们可以简单的理解为开辟一个通道，打开通道大门，双方通过一个包裹（Socket）交互，需要里面的信息，就把包裹拆了，读取其中的信息，不需要的时候，就把大门关闭。">对于网络交互，最重要的是理解Socket的相关传输机制，发送，打印，输入流输出流。我们可以简单的理解为开辟一个通道，打开通道大门，双方通过一个包裹（Socket）交互，需要里面的信息，就把包裹拆了，读取其中的信息，不需要的时候，就把大门关闭。</h5>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-10T05:45:29.000Z"><a href="/2014/05/10/jdbc连接mysql/">5月 10 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/10/jdbc连接mysql/">JDBC 连接 MySQL</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>以前Java后端写的确实是少，来看看JDBC吧。</p>
+<p>JDBC = Java DataBase Connectivity </p>
+<p>我们要使用JDBC，首先需要配置一下mysql 或者其他的数据库环境，配置在这里就略过了，以下均以mysql为我使用的数据库环境</p>
+<p>测试用数据库名：testjdbc<br>username： root<br>password： 空</p>
+<p>OK，首先我们需要下载一个jar文件，作为我们项目的依赖</p>
+<p>下载地址<a href="http://dev.mysql.com/downloads/connector/j/" target="_blank" rel="external">http://dev.mysql.com/downloads/connector/j/</a></p>
+<p>我们解开下载的压缩包，会看到一个jar文件，加入到我们项目的依赖中，基本配置完成。</p>
+<h4 id="JDBC基本使用">JDBC基本使用</h4>
+<p>1, 加载驱动</p>
+<pre><code><span class="keyword">Class</span>.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);<span class="comment">// 加载Mysql数据驱动</span>
+</code></pre><p>首先，我们需要加载mysql的驱动<br>这里的Class.forName 将class进行解释和初始化，需要在DriveManager里面注册，以初始化驱动</p>
+<p>2，创建数据库连接</p>
+<pre><code><span class="constant"> Connection connection;
+ connection</span> = DriverManager.getConnection(
+                <span class="string">"jdbc:mysql://localhost:3306/testjdbc"</span>, <span class="string">"root"</span>, <span class="string">""</span>);<span class="comment">// 创建数据连接，参数为：连接的ip和端口+数据库的名字，mysql用户名，mysql用户名的密码</span>
+</code></pre><p>这里我们需要连接到这个数据库，getconnection的三个参数，一个是uri，使用mysql的话，就是“jdbc:mysql//“ + ip +”:” +  端口  + “/” + 数据库名，第二个参数是用户名，第三个参数是对应用户名的密码</p>
+<p>3, 创建Statement对象      </p>
+<pre><code>  Statement statement ;
+    <span class="keyword">try</span> {
+       statement = connection.createStatement();
+                } <span class="keyword">catch</span> (SQLException e) {
+
+        e.printStackTrace();
+
+    }  
+</code></pre><p> Statement对象是我们的操纵杆，我们操作数据库需要通过Statement对象来完成</p>
+<p>4，执行SQL语句</p>
+<p>我们创建了Statement的对象之后就可以执行SQL语句了，执行查询的方式就是<code>statement.executeQuery(String sql)</code> 这种形式，比如：</p>
+<pre><code> try {
+       statement <span class="subst">=</span> connection<span class="built_in">.</span>createStatement();
+        <span class="keyword">ResultSet</span> <span class="keyword">resultSet</span> <span class="subst">=</span>statement<span class="built_in">.</span>executeQuery(<span class="string">"select * from test"</span>);
+        <span class="keyword">while</span> (<span class="keyword">resultSet</span><span class="built_in">.</span>next())
+        {
+            <span class="built_in">String</span> name <span class="subst">=</span> <span class="keyword">resultSet</span><span class="built_in">.</span>getString(<span class="string">"name"</span>);
+            int id <span class="subst">=</span> <span class="keyword">resultSet</span><span class="built_in">.</span>getInt(<span class="string">"id"</span>);
+            System<span class="built_in">.</span>out<span class="built_in">.</span>print(name <span class="subst">+</span> <span class="string">"  "</span> <span class="subst">+</span> id <span class="subst">+</span><span class="string">"\n"</span>) ;
+        }
+    } catch (SQLException e) {
+
+        e<span class="built_in">.</span>printStackTrace();
+
+    }
+</code></pre><p> 这里需要注意的一点是，如果执行的sql语句有返回值，那么返回的是一个ResultSet对象，使用方式和迭代器类似。</p>
+<p> 插入，删除操作使用的是<code>statement.executeUpdate(String sql)</code></p>
+<p> 类似这样  </p>
+<pre><code>   try {
+       statement = connection.createStatement();
+       System.out.print("<span class="operator"><span class="keyword">INSERT</span> RESULT :<span class="string">" + statement.executeUpdate("</span><span class="keyword">insert</span> <span class="keyword">into</span> test(name,id) <span class="keyword">values</span> (<span class="string">'123'</span> , <span class="number">7</span>)<span class="string">")+  "</span>\n<span class="string">");
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+    }</span></span>
+</code></pre><p>5， 当不使用数据库时，使用Connection.close关闭数据库连接</p>
+<p>三个主要语句的总结：</p>
+<p>statement.execute(String sql)</p>
+<p>执行sql语句，如果是查询语句（返回ResultSet），那么返回值是true，否则返回值是false</p>
+<p>statement.executeUpdate（String sql）</p>
+<p>执行sql语句，增、删、改使用，返回的是影响的行数</p>
+<p>statement.executeQuery(String sql)</p>
+<p>执行sql语句，执行查询操作，返回的是ResultSet</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-09T14:51:11.000Z"><a href="/2014/05/09/java-泛型相关/">5月 9 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/09/java-泛型相关/">Java泛型相关</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>泛型这个东西，确实是每天都在用，但是却我真的没有仔细好好深入的部分</p>
+<p><code>ArrayList list = new ArrayList&lt;String&gt;();</code></p>
+<p>这就是一个典型的泛型使用，我们创建了一个ArrayList容器，容纳的是String</p>
+<p>泛型是JDK5之后提供的语言特性，创造出来主要是为了提高代码的复用率</p>
+<p>泛型这个更多的是用在“容器”上</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> geneic&lt;T&gt;
+{
+    <span class="keyword">public</span> T <span class="keyword">var</span>;
+    <span class="keyword">public</span> <span class="title">geneic</span>(T c)
+    {
+        <span class="keyword">var</span> = c;
+    }
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">out</span>()
+    {
+        System.<span class="keyword">out</span>.print(<span class="keyword">var</span>.getClass().getName() + <span class="string">"\n"</span>);
+    }
+} 
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args)
+{
+   <span class="keyword">new</span> geneic&lt;Integer&gt;(<span class="number">2</span>).<span class="keyword">out</span>();
+   <span class="keyword">new</span> geneic&lt;Double&gt;(<span class="number">2.2</span>).<span class="keyword">out</span>();
+
+}
+</code></pre><p>这就是我们创建的一个泛型示例，T的意思是type，创建两个generic容器，把一个类型容纳进去。<br>输出的结果是 </p>
+<p><code>java.lang.Integer</code></p>
+<p><code>java.lang.Double</code></p>
+<p>泛型用于创建各种类型的“容器”，在创建的时候，我们还可以加以限制</p>
+<p>1.extends</p>
+<p>用法：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">geneic</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">Number</span>&gt;
+</span>{
+    <span class="keyword">public</span> T var;
+    <span class="keyword">public</span> <span class="title">geneic</span>(T c)
+    {
+        var = c;
+    }
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">out</span>()
+    {
+        System.out.print(var.getClass().getName() + <span class="string">"\n"</span>);
+    }
+} 
+</code></pre><p><code>extends</code>，继承自某个类，这里的<code>T extends Number</code> 把能加载到这个容器的类限制到了Number的子类，那就是说<code>new geneic&lt;Integer&gt;(2)</code>是可以的，但是<code>new geneic&lt;Integer&gt;(&quot;123&quot;)</code>是不可以的</p>
+<p>2,super</p>
+<p>用法基本和extends相同，一样是用来限制容器可以加载的类</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">geneic</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">Number</span>&gt;
+</span>{
+    <span class="keyword">public</span> T var;
+    <span class="keyword">public</span> <span class="title">geneic</span>(T c)
+    {
+        var = c;
+    }
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">out</span>()
+    {
+        System.out.print(var.getClass().getName() + <span class="string">"\n"</span>);
+    }
+} 
+</code></pre><p>super本身就是“超类”的意思，那么也就是把这个容易可以加载的部分限制了一个最小下界T，T以及T的父类都可以加载到这个容器之中</p>
+<h3 id="泛型的一些使用：">泛型的一些使用：</h3>
+<p>我们定义三个类：</p>
+<p>Fruit</p>
+<p>Apple</p>
+<p>RedApple</p>
+<p>继承关系从名字上都可以看出来</p>
+<p>有一点需要注意的是，Java创建对象的时候是不能使用通配符的，<code>List&lt;? extends Fruit&gt; fruitList = new ArrayList&lt;Fruit&gt;();</code>是可以的，但是<code>List&lt;? extends Fruit&gt; fruitList = new ArrayList&lt;?&gt;();</code>则会报错</p>
+<p>对于ArrayList来说，里面只能存放一种类型</p>
+<p>我们这样子来使用泛型：</p>
+<pre><code><span class="keyword">List</span><span class="preprocessor">&lt;?</span> extends Fruit&gt; fruitList = <span class="keyword">new</span> ArrayList&lt;Fruit&gt;();
+
+fruitList.add(<span class="keyword">new</span> Fruit()); <span class="comment">//报错</span>
+fruitList.add(<span class="keyword">new</span> Apple()); <span class="comment">//报错</span>
+</code></pre><p>这么写会编译错误，原因就在于，这里<code>? extends Fruit</code>意味着向里面放入可能是Fruit也可能是某种子类，编译器没有办法保证其安全</p>
+<p>我们换一种方式：</p>
+<pre><code>List&lt;? super Fruit&gt; fruitList = <span class="keyword">new</span> ArrayList&lt;Fruit&gt;();
+
+fruitList.<span class="built_in">add</span>(<span class="keyword">new</span> Apple());
+fruitList.<span class="built_in">add</span>(<span class="keyword">new</span> Fruit());
+</code></pre><p>这样子写不会有编译错误，子类cast成父类是不会有问题的</p>
+<p>还有我们一些要在方法中注意的问题</p>
+<p>上界声明：</p>
+<p>extends可以get，但是不能add</p>
+<pre><code> <span class="keyword">public</span> void upperBound(<span class="keyword">List</span><span class="preprocessor">&lt;?</span> extends Fruit&gt; <span class="keyword">list</span>,Fruit fruit)
+{
+    <span class="keyword">list</span>.get(<span class="number">0</span>); <span class="comment">//get没有问题</span>
+    <span class="keyword">list</span>.add(fruit); <span class="comment">//add这一句报错</span>
+}
+</code></pre><p>原理和上边一样，编译器不能保证类型安全</p>
+<p>下界声明：</p>
+<p>super可以add，但是不能get</p>
+<pre><code> <span class="keyword">public</span> void lowerBound(<span class="keyword">List</span><span class="preprocessor">&lt;?</span> super Fruit&gt; <span class="keyword">list</span>,Fruit fruit)
+{
+    <span class="keyword">list</span>.get(<span class="number">0</span>); <span class="comment">//get会报错</span>
+    <span class="keyword">list</span>.add(fruit); <span class="comment">//add没有问题</span>
+
+}
+</code></pre><p>原理也是同上，List<fruit>这种list里面添加一个fruit/apple是没有问题的，但是返回的时候就没办法说是哪一种类型，不知道是Object还是Fruit，所以报错</fruit></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-03T14:51:11.000Z"><a href="/2014/05/03/新的开始/">5月 3 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/03/新的开始/">新的开始</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>这是我的新博客，是我新的开始</p>
+<p>建立于2014年5月3日</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-03T13:42:58.000Z"><a href="/2014/05/03/hello-world/">5月 3 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/03/hello-world/">Hello World</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Welcome to <a href="http://hexo.io" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs" target="_blank" rel="external">documentation</a> to learn how to use.</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+
+  <nav id="pagination">
+  
+    <a href="/archives/" class="alignleft prev">上一页</a>
+  
+  
+  <div class="clearfix"></div>
+</nav>
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget about_me">
+  <h3 class="title">ABOUT ME</h3>
+  <ul class="entry">
+    
+    <li><img width="150" title="avatar" src="http://www.gravatar.com/avatar/d8708f776472330c6ced5f336cc1b3f8.png" /></li>
+    
+    
+    <li>微博：<a href="http://weibo.com/u/1651749981" target="_BLANK">@幻之神翼</a></li>
+    
+    <li>Github：<a href="https://github.com/fydx" target="_BLANK">fydx</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/算法/">算法</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/08/23/android事件机制相关/">android事件机制相关</a>
+      </li>
+    
+      <li>
+        <a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/25/android监听来电状况/">android监听来电状况</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget duoshuo_recent_comments">
+  <h3 class="title">最新评论</h3>
+  <ul class="entry ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-title="1" data-show-time="1"></ul>
+</div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+
+  
+<div class="widget links">
+  <h3 class="title">链接</h3>
+  <ul class="entry">
+    
+    <li><a href="http://fydx.cc" target="_BLANK">fydx&#39;s Blog</a></li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 fydx
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div style="display:none;">
+  <!-- 你的百度统计代码 -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0e8f59b5f6a4685006d013b89827075e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</div>
+
+</body>
+</html>

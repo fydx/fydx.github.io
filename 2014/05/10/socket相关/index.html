@@ -1,0 +1,480 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Socket相关 | fydx&#39;s area</title>
+  <meta name="author" content="fydx">
+  
+  <meta name="description" content="java | android | fydx">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Socket相关"/>
+  <meta property="og:site_name" content="fydx&#39;s area"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="fydx&#39;s area" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40790188-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">fydx&#39;s area</a></h1>
+  <h2><a href="/">码</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-10T13:32:40.000Z"><a href="/2014/05/10/socket相关/">5月 10 2014</a></time>
+      
+      
+  
+    <h1 class="title">Socket相关</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Socket是网络交互主要使用的一种方式，我们用一个例子来说明。</p>
+<p>这是一个QQ客户端，分为服务器端和客户端</p>
+<p>服务器端代码如下</p>
+<pre><code><span class="keyword">package</span> chat;  
+
+<span class="keyword">import</span> java.io.BufferedReader;  
+<span class="keyword">import</span> java.io.IOException;  
+<span class="keyword">import</span> java.io.InputStreamReader;  
+<span class="keyword">import</span> java.io.PrintWriter;  
+<span class="keyword">import</span> java.net.ServerSocket;  
+<span class="keyword">import</span> java.net.Socket;  
+<span class="keyword">import</span> java.util.ArrayList;  
+<span class="keyword">import</span> java.util.List;  
+<span class="keyword">import</span> java.util.concurrent.ExecutorService;  
+<span class="keyword">import</span> java.util.concurrent.Executors;  
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">chat</span> </span>{  
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PORT = <span class="number">8888</span>; <span class="comment">// 端口号  </span>
+    <span class="keyword">private</span> <span class="keyword">static</span> List&lt;Socket&gt; list = <span class="keyword">new</span> ArrayList&lt;Socket&gt;(); <span class="comment">// 保存连接对象</span>
+    <span class="keyword">private</span> ExecutorService exec;
+    <span class="keyword">private</span> ServerSocket server;
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args) {  
+    <span class="keyword">new</span> chat();  
+}  
+
+<span class="keyword">public</span> <span class="title">chat</span>() {  
+    <span class="keyword">try</span> {  
+        server = <span class="keyword">new</span> ServerSocket(PORT);  
+        exec = Executors.newCachedThreadPool();  
+        System.out.println(<span class="string">"服务器已启动！"</span>);  
+
+        Socket client = <span class="keyword">null</span>;  
+        <span class="keyword">while</span> (<span class="keyword">true</span>) {  
+            client = server.accept(); <span class="comment">// 接收客户连接  </span>
+            list.add(client);  
+            exec.execute(<span class="keyword">new</span> ChatTask(client));  
+        }  
+    } <span class="keyword">catch</span> (IOException e) {  
+        e.printStackTrace();  
+    }  
+}  
+
+<span class="keyword">static</span> class ChatTask implements Runnable {  
+    <span class="keyword">private</span> Socket socket;  
+    <span class="keyword">private</span> BufferedReader br;  
+    <span class="keyword">private</span> PrintWriter pw;  
+    <span class="keyword">private</span> String msg;  
+
+    <span class="keyword">public</span> <span class="title">ChatTask</span>(Socket socket) <span class="keyword">throws</span> IOException {  
+        <span class="keyword">this</span>.socket = socket;  
+        br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket  
+                .getInputStream()));  
+        msg = <span class="string">"【"</span> + <span class="keyword">this</span>.socket.getInetAddress() + <span class="string">"】进入聊天室！当前聊天室有【"</span>  
+                + list.size() + <span class="string">"】人"</span>;  
+
+        sendMessage();  
+    }  
+
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span>() {  
+        <span class="keyword">try</span> {  
+            <span class="keyword">while</span> ((msg = br.readLine()) != <span class="keyword">null</span>) {  
+                <span class="keyword">if</span> (msg.trim().equals(<span class="string">"bye"</span>)) {  
+                    list.remove(socket);  
+                    br.close();  
+                    pw.close();  
+                    msg = <span class="string">"【"</span> + socket.getInetAddress() + <span class="string">"】离开聊天室！当前聊天室有【"</span>  
+                            + list.size() + <span class="string">"】人"</span>;  
+                    socket.close();  
+
+                    sendMessage();  
+                    <span class="keyword">break</span>;  
+                } <span class="keyword">else</span> {  
+                    msg = <span class="string">"【"</span> + socket.getInetAddress() + <span class="string">"】说："</span> + msg;  
+                    sendMessage();  
+                }  
+            }  
+        } <span class="keyword">catch</span> (IOException e) {  
+            e.printStackTrace();  
+        }  
+    }  
+
+    <span class="javadoc">/** 
+     * 群发消息给聊天室的所有人 
+     */</span>  
+    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendMessage</span>() <span class="keyword">throws</span> IOException {  
+        System.out.println(msg);  
+        <span class="keyword">for</span> (Socket client : list) {  
+            pw = <span class="keyword">new</span> PrintWriter(client.getOutputStream(), <span class="keyword">true</span>);  
+            pw.println(msg);  
+        }  
+    }  
+}  
+}  
+</code></pre><p>客户端代码如下：</p>
+<pre><code><span class="keyword">package</span> client;
+
+<span class="keyword">import</span> java.io.BufferedReader;  
+<span class="keyword">import</span> java.io.InputStreamReader;  
+<span class="keyword">import</span> java.io.PrintWriter;  
+<span class="keyword">import</span> java.net.Socket;  
+<span class="keyword">import</span> java.util.concurrent.ExecutorService;  
+<span class="keyword">import</span> java.util.concurrent.Executors;  
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">client</span> </span>{  
+<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PORT = <span class="number">8888</span>;  
+<span class="keyword">private</span> <span class="keyword">static</span> ExecutorService exec = Executors.newCachedThreadPool();  
+
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args) <span class="keyword">throws</span> Exception {  
+    <span class="keyword">new</span> client();  
+}  
+
+<span class="keyword">public</span> <span class="title">client</span>() {  
+    <span class="keyword">try</span> {  
+        Socket socket = <span class="keyword">new</span> Socket(<span class="string">"192.168.1.100"</span>, PORT);
+        exec.execute(<span class="keyword">new</span> Sender(socket));
+        System.out
+                .println(<span class="string">"【"</span> + socket.getInetAddress() + <span class="string">"】您好，欢迎来到聊天室！"</span>);
+
+        BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket
+                .getInputStream()));
+        String msg;
+            <span class="keyword">while</span> ((msg = br.readLine()) != <span class="keyword">null</span>) {
+                System.out.println(msg);
+            }
+    } <span class="keyword">catch</span> (Exception e) {  
+
+    }  
+}  
+
+<span class="javadoc">/** 
+ * 客户端线程获取控制台输入消息 
+ */</span>  
+<span class="keyword">static</span> class Sender implements Runnable {  
+    <span class="keyword">private</span> Socket socket;  
+
+    <span class="keyword">public</span> <span class="title">Sender</span>(Socket socket) {  
+        <span class="keyword">this</span>.socket = socket;  
+    }  
+
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span>() {  
+        <span class="keyword">try</span> {  
+            BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(  
+                    System.in));  
+            PrintWriter pw = <span class="keyword">new</span> PrintWriter(socket.getOutputStream(), <span class="keyword">true</span>);  
+            String msg;  
+
+            <span class="keyword">while</span> (<span class="keyword">true</span>) {  
+                msg = br.readLine();  
+                pw.println(msg);  
+
+                <span class="keyword">if</span> (msg.trim().equals(<span class="string">"bye"</span>)) {  
+                    pw.close();  
+                    br.close();  
+                    exec.shutdownNow();  
+                    <span class="keyword">break</span>;  
+                }  
+            }  
+        } <span class="keyword">catch</span> (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }  
+}  
+}  
+</code></pre><h4 id="我们首先从服务器端说起">我们首先从服务器端说起</h4>
+<ol>
+<li><p>我们首先遇到的是ServerSocket这个类，ServerSocket负责建立对某个端口，我们以8888作为我们开启的端口号</p>
+<pre><code><span class="keyword">int</span> PORT = <span class="number">8888</span>；
+<span class="keyword">server</span> = <span class="keyword">new</span> ServerSocket(PORT);
+</code></pre></li>
+<li><p>接下来是一个线程池,用来接收用户的连接<br>cachedThreadPool 是一个缓冲线程池，可以重用以前构造的线程，如果没有可用的就重新构建一个，缓冲线程池会终止并从池里面移除60秒未被使用的线程</p>
+<p>   ExecutorService exec = Executors.newCachedThreadPool()</p>
+</li>
+<li><p>再往下，调用的是一个ServerSocket的accept方法，返回的是一个Socket对象，我们把这个Sokcet加入到一个List中，并且开启一个ChatTask线程以处理相关事务<br>关于Socket的发送我们会在客户端的相关再详述</p>
+</li>
+<li><p>关于ChatTask，输出信息和读取Socket的流数据都会在这里进行</p>
+<pre><code><span class="keyword">br</span> = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket
+             .getInputStream()));
+</code></pre><p> 上面这个代码把Socket的输入字节流封装成InputStreamReader，编程字符输入流，最终用BufferedReader来从字符输入流中读取相关字符。</p>
+<pre><code><span class="attribute">msg </span>=<span class="string"> br.readLine()   </span>
+</code></pre><p>  这样子即可最终拿到客户端发送来的内容</p>
+</li>
+<li><p>向所有客户端发送消息</p>
+<p>这里我们来读取到已经连接到服务端的所有客户端的Socket，获取PrintWriter向所有的客户端打印（输出）消息</p>
+<pre><code><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendMessage</span>() <span class="keyword">throws</span> IOException {  
+     <span class="keyword">for</span> (Socket client : list) {  
+         pw = <span class="keyword">new</span> PrintWriter(client.getOutputStream(), <span class="keyword">true</span>);  
+         pw.println(msg);  
+     }  
+ }
+</code></pre></li>
+</ol>
+<h4 id="接下来是客户端相关">接下来是客户端相关</h4>
+<p>客户端这里相对简单一些：</p>
+<ol>
+<li><p>首先我们要明确服务端的ip和端口，这里以192.168.1.100为ip，8888为开启的端口</p>
+</li>
+<li><p>我们新建一个Socket对象</p>
+<pre><code><span class="keyword">Socket</span> socket = new <span class="keyword">Socket</span>(<span class="string">"192.168.1.100"</span>, <span class="number">8888</span>);
+</code></pre></li>
+<li><p>我们还是可以去使用一个线程池，去获取控制台的相关信息</p>
+<pre><code>ExecutorService <span class="keyword">exec</span> = Executors.newCachedThreadPool()
+</code></pre></li>
+<li><p>客户端需要把自己输入的东西显示在自己的控制台上，这里基本上和服务端做的事情一样，读取Socket里面的内容，只不过这次读取的是客户端自己的Socket，而不是接收的</p>
+<pre><code>BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket
+            .getInputStream()));
+    String msg;
+        <span class="keyword">while</span> ((msg = br.readLine()) != <span class="keyword">null</span>) {
+            System.<span class="keyword">out</span>.println(msg);
+        }
+</code></pre></li>
+<li><p>核心的部分在Sender这个线程里面，我们所做的事情就是获取PrintWriter，向Socket里面打印（输入）我们的数据</p>
+<pre><code> <span class="type">BufferedReader</span> br = <span class="keyword">new</span> <span class="type">BufferedReader</span>(<span class="keyword">new</span> <span class="type">InputStreamReader</span>(<span class="type">System</span>.<span class="keyword">in</span>));  
+ <span class="type">PrintWriter</span> pw = <span class="keyword">new</span> <span class="type">PrintWriter</span>(socket.getOutputStream(), <span class="built_in">true</span>);  
+         <span class="type">String</span> msg;  
+         <span class="keyword">while</span> (<span class="built_in">true</span>) {  
+             msg = br.readLine();  
+             pw.<span class="built_in">println</span>(msg);  
+
+         }  
+</code></pre></li>
+<li><p>关闭连接，我们这类设定的是输入bye就关闭Socket连接，关闭PrintWriter、Socket和线程池</p>
+<pre><code>    <span class="keyword">if</span> (msg.trim().equals(<span class="string">"bye"</span>)) {  
+                 pw.<span class="keyword">close</span>();  
+                 br.<span class="keyword">close</span>();  
+                 <span class="keyword">exec</span>.shutdownNow();  
+                 <span class="keyword">break</span>;  
+             }  
+</code></pre></li>
+</ol>
+<h5 id="对于网络交互，最重要的是理解Socket的相关传输机制，发送，打印，输入流输出流。我们可以简单的理解为开辟一个通道，打开通道大门，双方通过一个包裹（Socket）交互，需要里面的信息，就把包裹拆了，读取其中的信息，不需要的时候，就把大门关闭。">对于网络交互，最重要的是理解Socket的相关传输机制，发送，打印，输入流输出流。我们可以简单的理解为开辟一个通道，打开通道大门，双方通过一个包裹（Socket）交互，需要里面的信息，就把包裹拆了，读取其中的信息，不需要的时候，就把大门关闭。</h5>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Java/">Java</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="Socket相关" data-url="http://fydxtech.cc/2014/05/10/socket相关/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!-- Duoshuo Comment END -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget about_me">
+  <h3 class="title">ABOUT ME</h3>
+  <ul class="entry">
+    
+    <li><img width="150" title="avatar" src="http://www.gravatar.com/avatar/d8708f776472330c6ced5f336cc1b3f8.png" /></li>
+    
+    
+    <li>微博：<a href="http://weibo.com/u/1651749981" target="_BLANK">@幻之神翼</a></li>
+    
+    <li>Github：<a href="https://github.com/fydx" target="_BLANK">fydx</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/算法/">算法</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/08/23/android事件机制相关/">android事件机制相关</a>
+      </li>
+    
+      <li>
+        <a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/25/android监听来电状况/">android监听来电状况</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget duoshuo_recent_comments">
+  <h3 class="title">最新评论</h3>
+  <ul class="entry ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-title="1" data-show-time="1"></ul>
+</div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+
+  
+<div class="widget links">
+  <h3 class="title">链接</h3>
+  <ul class="entry">
+    
+    <li><a href="http://fydx.cc" target="_BLANK">fydx&#39;s Blog</a></li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 fydx
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div style="display:none;">
+  <!-- 你的百度统计代码 -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0e8f59b5f6a4685006d013b89827075e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>算法-动态规划相关 | fydx&#39;s area</title>
+  <meta name="author" content="fydx">
+  
+  <meta name="description" content="java | android | fydx">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="算法-动态规划相关"/>
+  <meta property="og:site_name" content="fydx&#39;s area"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="fydx&#39;s area" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40790188-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">fydx&#39;s area</a></h1>
+  <h2><a href="/">码</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-13T07:37:41.000Z"><a href="/2014/05/13/算法-动态规划相关/">5月 13 2014</a></time>
+      
+      
+  
+    <h1 class="title">算法-动态规划相关</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>动态规划是一种很长见的算法，经典的题目如LCS，LIS都会用到动态规划。</p>
+<p>动态规划的特点是，动态规划会存储上一个状态的值，用递推公式去推下一个状态，保存起来，最终来得到最优解。</p>
+<p>我们需要找到某个状态的最优解，推下去得到其他状态的最优解。</p>
+<p>我们来通过两个经典的背包问题来说明动态规划：</p>
+<h4 id="0-1背包问题">0-1背包问题</h4>
+<blockquote>
+<p>There are 5 items that have a value and weight list below, the knapsack can contain at most 100 Lbs</p>
+<p>values: 20 30 65 40 60</p>
+<p>weight: 10 20 30 40 50</p>
+<p>Solve the problem as 0/1 knapsack.</p>
+</blockquote>
+<p>0-1背包问题，就是有一个容量是V的背包，第i件的重量是w[i],价值是v[i],每个物品只能装一次，那么如何让背包能装的价值最大</p>
+<p>理论上这个问题也可以用贪心去解决，但是贪心不一定能得出来合适的解，我们使用动态规划来解决这个问题</p>
+<p>0-1背包，指的就是对于一个物品只有两个选择：放，或者不放</p>
+<p>动态规划需要明确两个方面：状态和状态转移方程</p>
+<p>我们使用f[i][v]表示前i个物品放入容量为v的背包可以获得的最大价值<br>f[i][v] 就是一个状态</p>
+<p>状态转移方程是：</p>
+<p>f[i][v] = max{f[i-1][v]，f[i-1][v-w[i]]+v[i]}</p>
+<p>f[i-1][v] 就是这个物品不放的情况下状态</p>
+<p>f[i-1][v-w[i]] + w[i] 就是在放这个物品的情况下的状态</p>
+<p>贴上代码，详情在注释中有体现：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> Main {
+<span class="comment">/* 容量 */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> V = <span class="number">100</span>;
+<span class="comment">/* 物品总数 */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> I = <span class="number">5</span>;
+<span class="comment">/* 各个物品的values */</span>
+<span class="keyword">int</span>[] values = {<span class="number">20</span>,<span class="number">30</span>,<span class="number">65</span>,<span class="number">40</span>,<span class="number">60</span>};
+<span class="comment">/* 各个物品的weight */</span>
+<span class="keyword">int</span>[] weight = {<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>,<span class="number">40</span>,<span class="number">50</span>};
+<span class="comment">/* 建立储存状态的二维数组 ，表示在V容量装前I个物品的价值，加了1是为了让数组下标I就是实际的件数，V就是实际的容量*/</span>
+<span class="keyword">int</span>[][] f = <span class="keyword">new</span> <span class="keyword">int</span>[I+<span class="number">1</span>][V+<span class="number">1</span>];
+
+<span class="keyword">public</span> <span class="keyword">int</span> <span class="title">knapSack</span>()
+{
+    <span class="comment">/* i代表装物品的件数，我们可以直接从1开始循环，因为i=0的时候没有意义（一个物品都不装，肯定价值是0）*/</span>
+    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=I;i++)
+    {
+        <span class="comment">/* j代表容量，容量是0的时候也没有意义，所以直接从1开始循环 */</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=V;j++) {
+                <span class="comment">/*如果我没有装的下这个物品的容量，那么和之前的价值是一样的*/</span>
+                <span class="keyword">if</span> (j &lt; weight[i-<span class="number">1</span>])
+                    f[i][j] = f[i][j - <span class="number">1</span>];
+                <span class="keyword">else</span>
+                    <span class="comment">/*我有了装的下这个物品的容量，那么我们就上我们的递归公式，在装和不装中取一个和谐的值 */</span>
+                    f[i][j] = max(f[i - <span class="number">1</span>][j], f[i - <span class="number">1</span>][j - weight[i-<span class="number">1</span>]] + values[i-<span class="number">1</span>]);
+                <span class="comment">/*测试输出每次的i,j,f */</span>
+                System.<span class="keyword">out</span>.print(<span class="string">"i:"</span> + i + <span class="string">" j:"</span> + j + <span class="string">" f:"</span> + f[i][j] + <span class="string">"\n"</span>);
+
+        }
+    }
+    <span class="comment">/* 返回最大值 */</span>
+    <span class="keyword">return</span> f[I][V];
+}
+<span class="comment">/* 取两个数大的那一个 */</span>
+<span class="keyword">public</span> <span class="keyword">int</span> <span class="title">max</span>(<span class="keyword">int</span> a,<span class="keyword">int</span> b)
+{
+    <span class="keyword">if</span> (a&lt; b )
+        <span class="keyword">return</span> b;
+    <span class="keyword">else</span>
+        <span class="keyword">return</span> a;
+}
+
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args)
+{
+    Main main = <span class="keyword">new</span> Main();
+    System.<span class="keyword">out</span>.print(main.knapSack());
+
+}
+}
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/算法/">算法</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="算法-动态规划相关" data-url="http://fydxtech.cc/2014/05/13/算法-动态规划相关/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!-- Duoshuo Comment END -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget about_me">
+  <h3 class="title">ABOUT ME</h3>
+  <ul class="entry">
+    
+    <li><img width="150" title="avatar" src="http://www.gravatar.com/avatar/d8708f776472330c6ced5f336cc1b3f8.png" /></li>
+    
+    
+    <li>微博：<a href="http://weibo.com/u/1651749981" target="_BLANK">@幻之神翼</a></li>
+    
+    <li>Github：<a href="https://github.com/fydx" target="_BLANK">fydx</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/算法/">算法</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/08/23/android事件机制相关/">android事件机制相关</a>
+      </li>
+    
+      <li>
+        <a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/25/android监听来电状况/">android监听来电状况</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget duoshuo_recent_comments">
+  <h3 class="title">最新评论</h3>
+  <ul class="entry ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-title="1" data-show-time="1"></ul>
+</div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+
+  
+<div class="widget links">
+  <h3 class="title">链接</h3>
+  <ul class="entry">
+    
+    <li><a href="http://fydx.cc" target="_BLANK">fydx&#39;s Blog</a></li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 fydx
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div style="display:none;">
+  <!-- 你的百度统计代码 -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0e8f59b5f6a4685006d013b89827075e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</div>
+
+</body>
+</html>

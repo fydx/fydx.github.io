@@ -1,0 +1,306 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>android监听来电状况 | fydx&#39;s area</title>
+  <meta name="author" content="fydx">
+  
+  <meta name="description" content="java | android | fydx">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="android监听来电状况"/>
+  <meta property="og:site_name" content="fydx&#39;s area"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="fydx&#39;s area" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40790188-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">fydx&#39;s area</a></h1>
+  <h2><a href="/">码</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-24T16:46:30.000Z"><a href="/2014/05/25/android监听来电状况/">5月 25 2014</a></time>
+      
+      
+  
+    <h1 class="title">android监听来电状况</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>建立一个BoardCastReceiver进行监听</p>
+<pre><code><span class="javadoc">/**
+* Created by libin on 14-5-24.
+*/</span>
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ComingCallReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span> </span>{
+
+<span class="keyword">private</span> <span class="keyword">final</span> String TAG = <span class="string">"PhoneState"</span>;
+<span class="keyword">private</span> <span class="keyword">static</span> String phoneNumber = <span class="keyword">null</span>;
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span>(Context context, Intent intent) {
+    String action = intent.getAction();
+    <span class="keyword">if</span>(intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)){
+        <span class="comment">//拨打电话的状况</span>
+    }<span class="keyword">else</span>{
+        <span class="comment">//android没有接收来电的action，所以，不是拨打电话，就是接收来电</span>
+        doReceivePhone(context, intent);
+    }
+
+}
+
+<span class="javadoc">/**
+ * 处理来电
+ *<span class="javadoctag"> @param</span> context
+ *<span class="javadoctag"> @param</span> intent
+ */</span>
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doReceivePhone</span>(Context context, Intent intent) {
+
+    TelephonyManager telephony =
+            (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+    <span class="keyword">int</span> state = telephony.getCallState();
+    <span class="keyword">switch</span>(state){
+        <span class="keyword">case</span> TelephonyManager.CALL_STATE_RINGING:
+            Log.i(TAG, <span class="string">"来电 ："</span>+phoneNumber);
+            <span class="comment">/* 这里只有在来电的时候才能获取到PhoneNumber，其他的时候用这种方式获取的是null，
+                所以PhoneNumber使用一个静态变量来保存 */</span>
+            phoneNumber = intent.getStringExtra(
+                    TelephonyManager.EXTRA_INCOMING_NUMBER);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> TelephonyManager.CALL_STATE_IDLE:
+            Log.i(TAG, <span class="string">"挂断 ："</span>+phoneNumber);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> TelephonyManager.CALL_STATE_OFFHOOK:
+            Log.i(TAG, <span class="string">"通话 ："</span>+phoneNumber);
+            <span class="keyword">break</span>;
+    }
+}
+}
+</code></pre><p> 当然，我们还需要找个地方（Activity中或Service中）注册一下Receiver</p>
+<pre><code> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerIt</span>() {
+    Log.i(<span class="string">"PhoneState"</span>, <span class="string">"registerIt"</span>);
+    ComingCallReceiver  comingCallReceiver= <span class="keyword">new</span> ComingCallReceiver();
+    IntentFilter intentFilter = <span class="keyword">new</span> IntentFilter();
+    intentFilter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
+    intentFilter.setPriority(Integer.MAX_VALUE);
+    registerReceiver(comingCallReceiver, intentFilter);
+}
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Android/">Android</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="android监听来电状况" data-url="http://fydxtech.cc/2014/05/25/android监听来电状况/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!-- Duoshuo Comment END -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget about_me">
+  <h3 class="title">ABOUT ME</h3>
+  <ul class="entry">
+    
+    <li><img width="150" title="avatar" src="http://www.gravatar.com/avatar/d8708f776472330c6ced5f336cc1b3f8.png" /></li>
+    
+    
+    <li>微博：<a href="http://weibo.com/u/1651749981" target="_BLANK">@幻之神翼</a></li>
+    
+    <li>Github：<a href="https://github.com/fydx" target="_BLANK">fydx</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/算法/">算法</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/08/23/android事件机制相关/">android事件机制相关</a>
+      </li>
+    
+      <li>
+        <a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/25/android监听来电状况/">android监听来电状况</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget duoshuo_recent_comments">
+  <h3 class="title">最新评论</h3>
+  <ul class="entry ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-title="1" data-show-time="1"></ul>
+</div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+
+  
+<div class="widget links">
+  <h3 class="title">链接</h3>
+  <ul class="entry">
+    
+    <li><a href="http://fydx.cc" target="_BLANK">fydx&#39;s Blog</a></li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 fydx
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div style="display:none;">
+  <!-- 你的百度统计代码 -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0e8f59b5f6a4685006d013b89827075e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Java泛型相关 | fydx&#39;s area</title>
+  <meta name="author" content="fydx">
+  
+  <meta name="description" content="java | android | fydx">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Java泛型相关"/>
+  <meta property="og:site_name" content="fydx&#39;s area"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="fydx&#39;s area" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40790188-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">fydx&#39;s area</a></h1>
+  <h2><a href="/">码</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-09T14:51:11.000Z"><a href="/2014/05/09/java-泛型相关/">5月 9 2014</a></time>
+      
+      
+  
+    <h1 class="title">Java泛型相关</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>泛型这个东西，确实是每天都在用，但是却我真的没有仔细好好深入的部分</p>
+<p><code>ArrayList list = new ArrayList&lt;String&gt;();</code></p>
+<p>这就是一个典型的泛型使用，我们创建了一个ArrayList容器，容纳的是String</p>
+<p>泛型是JDK5之后提供的语言特性，创造出来主要是为了提高代码的复用率</p>
+<p>泛型这个更多的是用在“容器”上</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> geneic&lt;T&gt;
+{
+    <span class="keyword">public</span> T <span class="keyword">var</span>;
+    <span class="keyword">public</span> <span class="title">geneic</span>(T c)
+    {
+        <span class="keyword">var</span> = c;
+    }
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">out</span>()
+    {
+        System.<span class="keyword">out</span>.print(<span class="keyword">var</span>.getClass().getName() + <span class="string">"\n"</span>);
+    }
+} 
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args)
+{
+   <span class="keyword">new</span> geneic&lt;Integer&gt;(<span class="number">2</span>).<span class="keyword">out</span>();
+   <span class="keyword">new</span> geneic&lt;Double&gt;(<span class="number">2.2</span>).<span class="keyword">out</span>();
+
+}
+</code></pre><p>这就是我们创建的一个泛型示例，T的意思是type，创建两个generic容器，把一个类型容纳进去。<br>输出的结果是 </p>
+<p><code>java.lang.Integer</code></p>
+<p><code>java.lang.Double</code></p>
+<p>泛型用于创建各种类型的“容器”，在创建的时候，我们还可以加以限制</p>
+<p>1.extends</p>
+<p>用法：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">geneic</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">Number</span>&gt;
+</span>{
+    <span class="keyword">public</span> T var;
+    <span class="keyword">public</span> <span class="title">geneic</span>(T c)
+    {
+        var = c;
+    }
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">out</span>()
+    {
+        System.out.print(var.getClass().getName() + <span class="string">"\n"</span>);
+    }
+} 
+</code></pre><p><code>extends</code>，继承自某个类，这里的<code>T extends Number</code> 把能加载到这个容器的类限制到了Number的子类，那就是说<code>new geneic&lt;Integer&gt;(2)</code>是可以的，但是<code>new geneic&lt;Integer&gt;(&quot;123&quot;)</code>是不可以的</p>
+<p>2,super</p>
+<p>用法基本和extends相同，一样是用来限制容器可以加载的类</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">geneic</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">Number</span>&gt;
+</span>{
+    <span class="keyword">public</span> T var;
+    <span class="keyword">public</span> <span class="title">geneic</span>(T c)
+    {
+        var = c;
+    }
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">out</span>()
+    {
+        System.out.print(var.getClass().getName() + <span class="string">"\n"</span>);
+    }
+} 
+</code></pre><p>super本身就是“超类”的意思，那么也就是把这个容易可以加载的部分限制了一个最小下界T，T以及T的父类都可以加载到这个容器之中</p>
+<h3 id="泛型的一些使用：">泛型的一些使用：</h3>
+<p>我们定义三个类：</p>
+<p>Fruit</p>
+<p>Apple</p>
+<p>RedApple</p>
+<p>继承关系从名字上都可以看出来</p>
+<p>有一点需要注意的是，Java创建对象的时候是不能使用通配符的，<code>List&lt;? extends Fruit&gt; fruitList = new ArrayList&lt;Fruit&gt;();</code>是可以的，但是<code>List&lt;? extends Fruit&gt; fruitList = new ArrayList&lt;?&gt;();</code>则会报错</p>
+<p>对于ArrayList来说，里面只能存放一种类型</p>
+<p>我们这样子来使用泛型：</p>
+<pre><code><span class="keyword">List</span><span class="preprocessor">&lt;?</span> extends Fruit&gt; fruitList = <span class="keyword">new</span> ArrayList&lt;Fruit&gt;();
+
+fruitList.add(<span class="keyword">new</span> Fruit()); <span class="comment">//报错</span>
+fruitList.add(<span class="keyword">new</span> Apple()); <span class="comment">//报错</span>
+</code></pre><p>这么写会编译错误，原因就在于，这里<code>? extends Fruit</code>意味着向里面放入可能是Fruit也可能是某种子类，编译器没有办法保证其安全</p>
+<p>我们换一种方式：</p>
+<pre><code>List&lt;? super Fruit&gt; fruitList = <span class="keyword">new</span> ArrayList&lt;Fruit&gt;();
+
+fruitList.<span class="built_in">add</span>(<span class="keyword">new</span> Apple());
+fruitList.<span class="built_in">add</span>(<span class="keyword">new</span> Fruit());
+</code></pre><p>这样子写不会有编译错误，子类cast成父类是不会有问题的</p>
+<p>还有我们一些要在方法中注意的问题</p>
+<p>上界声明：</p>
+<p>extends可以get，但是不能add</p>
+<pre><code> <span class="keyword">public</span> void upperBound(<span class="keyword">List</span><span class="preprocessor">&lt;?</span> extends Fruit&gt; <span class="keyword">list</span>,Fruit fruit)
+{
+    <span class="keyword">list</span>.get(<span class="number">0</span>); <span class="comment">//get没有问题</span>
+    <span class="keyword">list</span>.add(fruit); <span class="comment">//add这一句报错</span>
+}
+</code></pre><p>原理和上边一样，编译器不能保证类型安全</p>
+<p>下界声明：</p>
+<p>super可以add，但是不能get</p>
+<pre><code> <span class="keyword">public</span> void lowerBound(<span class="keyword">List</span><span class="preprocessor">&lt;?</span> super Fruit&gt; <span class="keyword">list</span>,Fruit fruit)
+{
+    <span class="keyword">list</span>.get(<span class="number">0</span>); <span class="comment">//get会报错</span>
+    <span class="keyword">list</span>.add(fruit); <span class="comment">//add没有问题</span>
+
+}
+</code></pre><p>原理也是同上，List<fruit>这种list里面添加一个fruit/apple是没有问题的，但是返回的时候就没办法说是哪一种类型，不知道是Object还是Fruit，所以报错</fruit></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Java/">Java</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="Java泛型相关" data-url="http://fydxtech.cc/2014/05/09/java-泛型相关/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!-- Duoshuo Comment END -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget about_me">
+  <h3 class="title">ABOUT ME</h3>
+  <ul class="entry">
+    
+    <li><img width="150" title="avatar" src="http://www.gravatar.com/avatar/d8708f776472330c6ced5f336cc1b3f8.png" /></li>
+    
+    
+    <li>微博：<a href="http://weibo.com/u/1651749981" target="_BLANK">@幻之神翼</a></li>
+    
+    <li>Github：<a href="https://github.com/fydx" target="_BLANK">fydx</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/算法/">算法</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/08/23/android事件机制相关/">android事件机制相关</a>
+      </li>
+    
+      <li>
+        <a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/25/android监听来电状况/">android监听来电状况</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget duoshuo_recent_comments">
+  <h3 class="title">最新评论</h3>
+  <ul class="entry ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-title="1" data-show-time="1"></ul>
+</div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+
+  
+<div class="widget links">
+  <h3 class="title">链接</h3>
+  <ul class="entry">
+    
+    <li><a href="http://fydx.cc" target="_BLANK">fydx&#39;s Blog</a></li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 fydx
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div style="display:none;">
+  <!-- 你的百度统计代码 -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0e8f59b5f6a4685006d013b89827075e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</div>
+
+</body>
+</html>

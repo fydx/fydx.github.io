@@ -1,0 +1,298 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>分治法的一道题 | fydx&#39;s area</title>
+  <meta name="author" content="fydx">
+  
+  <meta name="description" content="java | android | fydx">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="分治法的一道题"/>
+  <meta property="og:site_name" content="fydx&#39;s area"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="fydx&#39;s area" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40790188-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">fydx&#39;s area</a></h1>
+  <h2><a href="/">码</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-11T15:45:31.000Z"><a href="/2014/05/11/分治法的一道题/">5月 11 2014</a></time>
+      
+      
+  
+    <h1 class="title">分治法的一道题</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h4 id="题目：">题目：</h4>
+<blockquote>
+<p>Give a divide and conquer algorithm for the following problem: you are given two sorted lists of size m and n, and are allowed unit time access to the ith element of each list. Give an O(lg m + lgn) time algorithm for computing the kth largest element in the union of the two lists. (For simplicity, you can assume that the elements of the two lists are distinct).</p>
+</blockquote>
+<p>翻译过来，就是说，使用分治法解决一个问题：给两个已经排序好的数组，如何找出对于这两个数组合并、排序之后来说第k大的元素，要求时间复杂度为O(logm+logn)</p>
+<p>这个问题最直接的方法就是用归并排序，生成一个新的数组（毕竟数据源是两个有序数组），然后对新的数组遍历到k，返回这个数，结束，这种方法简单粗暴，但是我们有更好的方法。</p>
+<p>我们可以不去选择做“排序”这个动作，排序消耗大量时间，而归并排序又需要消耗大量的空间。我们来用另外一种方式来考虑这个问题。</p>
+<p>首先，我们对比一下A[k/2-1]和B[k/2-1]的值：</p>
+<ul>
+<li>如果A[k/2-1]&lt;B[k/2-1],那么A[0]-A[k/2-1]这些值都可以被忽略掉了<blockquote>
+<p>假设不能忽略，即A∪B[K-1]就在A[0…K/2-1]里面，取最大值A[K/2-1]为A∪B[K-1]。<br>由此则B中必定有K/2个元素小于A[K/2-1]，而又因为A[K/2-1] &lt; B[K/2-1]，故假设不成立。</p>
+</blockquote>
+</li>
+<li>如果A[k/2-1]&gt;B[k/2-1],那么同理，B[0]-B[k/2-1]这些值夜都可以被忽略掉了</li>
+<li>如果A[k/2-1] = B[k/2-1],那么我们就找到了我们想要的那个值了</li>
+</ul>
+<p>如果A[k/2-1]和B[k/2-1]不相等，我们就可以去掉K/2个元素</p>
+<p>接下来，A或者B变为去掉K/2的元素的新数组，比如如果A[k/2-1]&lt;B[k/2-1]，那么 A= A[k/2] - A[A.length]</p>
+<p>然后，K = K - K/2 ,因为我们已经去掉了k/2个元素（这样写是因为比K = K/2更好理解一些）</p>
+<p>一直递归下去，执行A和B数组中某个元素的比较，直到A或者B数组长度为0或者1。</p>
+<p>如果为0，那么就取另外一个数组的下标为k/2的元素即可，如果是1，那么就取A[0]和B[0]中比较小的元素。</p>
+<p>实际代码：</p>
+<pre><code> int find(int[] <span class="literal">A</span>, int[] B, int k) {
+    //避免<span class="literal">A</span>或者B是个空的
+    <span class="keyword">if</span> (<span class="literal">A</span>.length == <span class="number">0</span>) <span class="keyword">return</span> B[k - <span class="number">1</span>]<span class="comment">;</span>
+    <span class="keyword">if</span> (B.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">A</span>[k - <span class="number">1</span>]<span class="comment">;</span>
+    //递归到k =<span class="number">1</span>的情况
+    <span class="keyword">if</span> (k == <span class="number">1</span>) <span class="keyword">return</span> Math.min(<span class="literal">A</span>[<span class="number">0</span>], B[<span class="number">0</span>])<span class="comment">;</span>
+    //如果<span class="literal">A</span>比B还长的话...
+    <span class="keyword">if</span> (<span class="literal">A</span>.length &gt; B.length) <span class="keyword">return</span> find(B, <span class="literal">A</span>, k)<span class="comment">;</span>
+    //如果k/<span class="number">2</span>比<span class="literal">a</span>的长度还要长，那么就取<span class="literal">A</span>的长度
+    int <span class="literal">a</span> = Math.min(<span class="literal">A</span>.length,k/<span class="number">2</span>)<span class="comment">;</span>
+    int b = k - <span class="literal">a</span><span class="comment">;</span>
+    //我们的主要步骤
+    <span class="keyword">if</span> (<span class="literal">A</span>[<span class="literal">a</span>-<span class="number">1</span>] &lt; B[b-<span class="number">1</span>]) {
+        <span class="keyword">return</span> find(Arrays.copyOfRange(<span class="literal">A</span>, <span class="literal">a</span>, <span class="literal">A</span>.length), B, k - <span class="literal">a</span>)<span class="comment">;</span>
+    } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="literal">A</span>[<span class="literal">a</span>-<span class="number">1</span>] &gt; B[b-<span class="number">1</span>]) {
+        <span class="keyword">return</span> find(<span class="literal">A</span>, Arrays.copyOfRange(B, b, B.length), k - b)<span class="comment">;</span>
+    } <span class="keyword">else</span> {
+        <span class="keyword">return</span> <span class="literal">A</span>[<span class="literal">a</span>-<span class="number">1</span>]<span class="comment">;</span>
+    }
+}
+</code></pre><p>我们来看看分治法具体的三个步骤的体现:</p>
+<ul>
+<li>分 —— A或者B的下标为K/2-1前面的部分和后面的部分分别处理，递归到A或者B数组里面只剩下0或者1个元素</li>
+<li>治 —— 比较A[k/2-1]和B[k/2-1]的值，大于、小于、等于分别有三种的处理方法</li>
+<li>合 —— 感觉这里体现的不是很明显，最后返回的是一个值，没有具体的合并过程</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/算法/">算法</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="分治法的一道题" data-url="http://fydxtech.cc/2014/05/11/分治法的一道题/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!-- Duoshuo Comment END -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget about_me">
+  <h3 class="title">ABOUT ME</h3>
+  <ul class="entry">
+    
+    <li><img width="150" title="avatar" src="http://www.gravatar.com/avatar/d8708f776472330c6ced5f336cc1b3f8.png" /></li>
+    
+    
+    <li>微博：<a href="http://weibo.com/u/1651749981" target="_BLANK">@幻之神翼</a></li>
+    
+    <li>Github：<a href="https://github.com/fydx" target="_BLANK">fydx</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/算法/">算法</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/08/23/android事件机制相关/">android事件机制相关</a>
+      </li>
+    
+      <li>
+        <a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/25/android监听来电状况/">android监听来电状况</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget duoshuo_recent_comments">
+  <h3 class="title">最新评论</h3>
+  <ul class="entry ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-title="1" data-show-time="1"></ul>
+</div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+
+  
+<div class="widget links">
+  <h3 class="title">链接</h3>
+  <ul class="entry">
+    
+    <li><a href="http://fydx.cc" target="_BLANK">fydx&#39;s Blog</a></li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 fydx
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div style="display:none;">
+  <!-- 你的百度统计代码 -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0e8f59b5f6a4685006d013b89827075e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</div>
+
+</body>
+</html>

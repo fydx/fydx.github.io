@@ -1,0 +1,832 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Java | fydx&#39;s area</title>
+  <meta name="author" content="fydx">
+  
+  <meta name="description" content="java | android | fydx">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="fydx&#39;s area"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="fydx&#39;s area" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40790188-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">fydx&#39;s area</a></h1>
+  <h2><a href="/">码</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+<h2 class="archive-title tag">Java</h2>
+
+
+  
+    <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-12T04:55:49.000Z"><a href="/2014/05/12/java接口相关/">5月 12 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/12/java接口相关/">java接口相关</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>接口是Java里面很常用的一个特性，接口的作用是用来定义一个规范，让其他的类实现这个接口，让我们明确，这个类实现了这个接口，可以做这个事情。</p>
+<p>举个例子，我们中午在街上，肚子饿了，附近有很多写着“餐厅”招牌的地方。那么这些地方实际上就是实现了“有吃的东西卖”这个接口，告诉我们这个地方有饭吃。至于里面的饭是什么，好不好吃，那么就是看各家的实现了。</p>
+<p>我们来按这个例子写一个代码</p>
+<p>我们定义了一个接口SellFood，创建两个类DumplingRestaurant和NoodleResuaurant去实现这个接口，创建一个Person可以去买食物</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">interfaceTest</span> </span>{
+
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SellFood</span>
+</span>{
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sell</span>();
+
+}
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DumplingRestaurant</span> <span class="keyword">implements</span> <span class="title">SellFood</span>
+</span>{
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sell</span>()
+    {
+        System.out.print(<span class="string">"Sell Dumplings Here"</span> + <span class="string">"\n"</span>);
+    }
+
+}
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NoodleRestaurant</span> <span class="keyword">implements</span> <span class="title">SellFood</span>
+</span>{
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sell</span>()
+    {
+        System.out.print(<span class="string">"Sell Noodle Here"</span> + <span class="string">"\n"</span>);
+    }
+}
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span>
+</span>{
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buy</span>(SellFood sellFood)
+    {
+        sellFood.sell();
+    }
+}
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args)
+{
+    interfaceTest interfaceTest =  <span class="keyword">new</span> interfaceTest();
+    DumplingRestaurant dumplingRestaurant = interfaceTest.<span class="keyword">new</span> DumplingRestaurant();
+    NoodleRestaurant noodleRestaurant = interfaceTest.<span class="keyword">new</span> NoodleRestaurant();
+    Person person = interfaceTest.<span class="keyword">new</span> Person();
+    person.buy(dumplingRestaurant);
+    person.buy(noodleRestaurant);
+}
+
+}
+</code></pre><p>从这个代码我们可以看出来，Person是去“可以买的东西地方”买东西，没必要去关心这里到底是卖什么东西，只要这个地方实现了SellFood的接口就可以被传入到buy这个方法里面</p>
+<p>接口最典型的应用就是Comparable和Comparator了</p>
+<h4 id="对于Comparable来说：">对于Comparable来说：</h4>
+<p>实现Comparable，就需要类里面实现compareTo方法，明确这个类是可以被排序的，当这个类被加载到某个集合（比如数组或者List中）的时候，可以使用Collections.sort()和Arrays.sort()排序</p>
+<p>compareTo方法可以这样子调用</p>
+<pre><code>    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span>(Person person) {
+        <span class="keyword">return</span> <span class="keyword">this</span>.age - person.age;
+    }
+</code></pre><p> 返回 &gt;0  =0 &lt;0 的数以说明该对象相对于另外一个对象大于，等于，或者小于</p>
+<h4 id="对于Comparator来说：">对于Comparator来说：</h4>
+<p>Comparable是在类内部来实现的，而Comparator是在集合的外部实现的，Comparator不需要在类的内部去定义，在类的外部创建即可</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">AgeComparator</span> <span class="keyword">implements</span> <span class="title">Comparator</span>&lt;<span class="title">Person</span>&gt; </span>{
+
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span>(Person p1, Person p2) {
+    <span class="keyword">return</span> p1.getAge() - p2.getAge();
+}
+}
+</code></pre><p>使用Comparator的时候需要这样写：</p>
+<pre><code> ArrayList&lt;Person&gt; persons = <span class="keyword">new</span> ArrayList&lt;Person&gt;();
+ person.<span class="built_in">add</span>(<span class="string">"12"</span>);
+ // 增加几个元素之后
+ Collections.<span class="built_in">sort</span>(persons, comparator);
+</code></pre><p>PS. 写Restaurant这个程序的时候有个小插曲，如果我们直接写<code>DumplingRestaurant dumplingRestaurant = new DumplingRestaurant();</code> 会报错</p>
+<blockquote>
+<p>No enclosing instance of type interfaceTest is accessible. Must qualify the allocation with an enclosing instance of type interfaceTest (e.g. x.new A() where x is an instance of interfaceTest).</p>
+</blockquote>
+<p>这个意思是，必须先进行外部类的实例化，才能通过外部类来引用内部类。因为两个Restautant和Person都是内部类，所以我们必须先进行外部类的实例化，用这种方式来创建对象才行：</p>
+<pre><code>interfaceTest interfaceTest =  <span class="keyword">new</span> interfaceTest();
+    DumplingRestaurant dumplingRestaurant = interfaceTest.<span class="keyword">new</span> DumplingRestaurant();
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-10T13:32:40.000Z"><a href="/2014/05/10/socket相关/">5月 10 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/10/socket相关/">Socket相关</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Socket是网络交互主要使用的一种方式，我们用一个例子来说明。</p>
+<p>这是一个QQ客户端，分为服务器端和客户端</p>
+<p>服务器端代码如下</p>
+<pre><code><span class="keyword">package</span> chat;  
+
+<span class="keyword">import</span> java.io.BufferedReader;  
+<span class="keyword">import</span> java.io.IOException;  
+<span class="keyword">import</span> java.io.InputStreamReader;  
+<span class="keyword">import</span> java.io.PrintWriter;  
+<span class="keyword">import</span> java.net.ServerSocket;  
+<span class="keyword">import</span> java.net.Socket;  
+<span class="keyword">import</span> java.util.ArrayList;  
+<span class="keyword">import</span> java.util.List;  
+<span class="keyword">import</span> java.util.concurrent.ExecutorService;  
+<span class="keyword">import</span> java.util.concurrent.Executors;  
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">chat</span> </span>{  
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PORT = <span class="number">8888</span>; <span class="comment">// 端口号  </span>
+    <span class="keyword">private</span> <span class="keyword">static</span> List&lt;Socket&gt; list = <span class="keyword">new</span> ArrayList&lt;Socket&gt;(); <span class="comment">// 保存连接对象</span>
+    <span class="keyword">private</span> ExecutorService exec;
+    <span class="keyword">private</span> ServerSocket server;
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args) {  
+    <span class="keyword">new</span> chat();  
+}  
+
+<span class="keyword">public</span> <span class="title">chat</span>() {  
+    <span class="keyword">try</span> {  
+        server = <span class="keyword">new</span> ServerSocket(PORT);  
+        exec = Executors.newCachedThreadPool();  
+        System.out.println(<span class="string">"服务器已启动！"</span>);  
+
+        Socket client = <span class="keyword">null</span>;  
+        <span class="keyword">while</span> (<span class="keyword">true</span>) {  
+            client = server.accept(); <span class="comment">// 接收客户连接  </span>
+            list.add(client);  
+            exec.execute(<span class="keyword">new</span> ChatTask(client));  
+        }  
+    } <span class="keyword">catch</span> (IOException e) {  
+        e.printStackTrace();  
+    }  
+}  
+
+<span class="keyword">static</span> class ChatTask implements Runnable {  
+    <span class="keyword">private</span> Socket socket;  
+    <span class="keyword">private</span> BufferedReader br;  
+    <span class="keyword">private</span> PrintWriter pw;  
+    <span class="keyword">private</span> String msg;  
+
+    <span class="keyword">public</span> <span class="title">ChatTask</span>(Socket socket) <span class="keyword">throws</span> IOException {  
+        <span class="keyword">this</span>.socket = socket;  
+        br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket  
+                .getInputStream()));  
+        msg = <span class="string">"【"</span> + <span class="keyword">this</span>.socket.getInetAddress() + <span class="string">"】进入聊天室！当前聊天室有【"</span>  
+                + list.size() + <span class="string">"】人"</span>;  
+
+        sendMessage();  
+    }  
+
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span>() {  
+        <span class="keyword">try</span> {  
+            <span class="keyword">while</span> ((msg = br.readLine()) != <span class="keyword">null</span>) {  
+                <span class="keyword">if</span> (msg.trim().equals(<span class="string">"bye"</span>)) {  
+                    list.remove(socket);  
+                    br.close();  
+                    pw.close();  
+                    msg = <span class="string">"【"</span> + socket.getInetAddress() + <span class="string">"】离开聊天室！当前聊天室有【"</span>  
+                            + list.size() + <span class="string">"】人"</span>;  
+                    socket.close();  
+
+                    sendMessage();  
+                    <span class="keyword">break</span>;  
+                } <span class="keyword">else</span> {  
+                    msg = <span class="string">"【"</span> + socket.getInetAddress() + <span class="string">"】说："</span> + msg;  
+                    sendMessage();  
+                }  
+            }  
+        } <span class="keyword">catch</span> (IOException e) {  
+            e.printStackTrace();  
+        }  
+    }  
+
+    <span class="javadoc">/** 
+     * 群发消息给聊天室的所有人 
+     */</span>  
+    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendMessage</span>() <span class="keyword">throws</span> IOException {  
+        System.out.println(msg);  
+        <span class="keyword">for</span> (Socket client : list) {  
+            pw = <span class="keyword">new</span> PrintWriter(client.getOutputStream(), <span class="keyword">true</span>);  
+            pw.println(msg);  
+        }  
+    }  
+}  
+}  
+</code></pre><p>客户端代码如下：</p>
+<pre><code><span class="keyword">package</span> client;
+
+<span class="keyword">import</span> java.io.BufferedReader;  
+<span class="keyword">import</span> java.io.InputStreamReader;  
+<span class="keyword">import</span> java.io.PrintWriter;  
+<span class="keyword">import</span> java.net.Socket;  
+<span class="keyword">import</span> java.util.concurrent.ExecutorService;  
+<span class="keyword">import</span> java.util.concurrent.Executors;  
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">client</span> </span>{  
+<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PORT = <span class="number">8888</span>;  
+<span class="keyword">private</span> <span class="keyword">static</span> ExecutorService exec = Executors.newCachedThreadPool();  
+
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args) <span class="keyword">throws</span> Exception {  
+    <span class="keyword">new</span> client();  
+}  
+
+<span class="keyword">public</span> <span class="title">client</span>() {  
+    <span class="keyword">try</span> {  
+        Socket socket = <span class="keyword">new</span> Socket(<span class="string">"192.168.1.100"</span>, PORT);
+        exec.execute(<span class="keyword">new</span> Sender(socket));
+        System.out
+                .println(<span class="string">"【"</span> + socket.getInetAddress() + <span class="string">"】您好，欢迎来到聊天室！"</span>);
+
+        BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket
+                .getInputStream()));
+        String msg;
+            <span class="keyword">while</span> ((msg = br.readLine()) != <span class="keyword">null</span>) {
+                System.out.println(msg);
+            }
+    } <span class="keyword">catch</span> (Exception e) {  
+
+    }  
+}  
+
+<span class="javadoc">/** 
+ * 客户端线程获取控制台输入消息 
+ */</span>  
+<span class="keyword">static</span> class Sender implements Runnable {  
+    <span class="keyword">private</span> Socket socket;  
+
+    <span class="keyword">public</span> <span class="title">Sender</span>(Socket socket) {  
+        <span class="keyword">this</span>.socket = socket;  
+    }  
+
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span>() {  
+        <span class="keyword">try</span> {  
+            BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(  
+                    System.in));  
+            PrintWriter pw = <span class="keyword">new</span> PrintWriter(socket.getOutputStream(), <span class="keyword">true</span>);  
+            String msg;  
+
+            <span class="keyword">while</span> (<span class="keyword">true</span>) {  
+                msg = br.readLine();  
+                pw.println(msg);  
+
+                <span class="keyword">if</span> (msg.trim().equals(<span class="string">"bye"</span>)) {  
+                    pw.close();  
+                    br.close();  
+                    exec.shutdownNow();  
+                    <span class="keyword">break</span>;  
+                }  
+            }  
+        } <span class="keyword">catch</span> (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }  
+}  
+}  
+</code></pre><h4 id="我们首先从服务器端说起">我们首先从服务器端说起</h4>
+<ol>
+<li><p>我们首先遇到的是ServerSocket这个类，ServerSocket负责建立对某个端口，我们以8888作为我们开启的端口号</p>
+<pre><code><span class="keyword">int</span> PORT = <span class="number">8888</span>；
+<span class="keyword">server</span> = <span class="keyword">new</span> ServerSocket(PORT);
+</code></pre></li>
+<li><p>接下来是一个线程池,用来接收用户的连接<br>cachedThreadPool 是一个缓冲线程池，可以重用以前构造的线程，如果没有可用的就重新构建一个，缓冲线程池会终止并从池里面移除60秒未被使用的线程</p>
+<p>   ExecutorService exec = Executors.newCachedThreadPool()</p>
+</li>
+<li><p>再往下，调用的是一个ServerSocket的accept方法，返回的是一个Socket对象，我们把这个Sokcet加入到一个List中，并且开启一个ChatTask线程以处理相关事务<br>关于Socket的发送我们会在客户端的相关再详述</p>
+</li>
+<li><p>关于ChatTask，输出信息和读取Socket的流数据都会在这里进行</p>
+<pre><code><span class="keyword">br</span> = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket
+             .getInputStream()));
+</code></pre><p> 上面这个代码把Socket的输入字节流封装成InputStreamReader，编程字符输入流，最终用BufferedReader来从字符输入流中读取相关字符。</p>
+<pre><code><span class="attribute">msg </span>=<span class="string"> br.readLine()   </span>
+</code></pre><p>  这样子即可最终拿到客户端发送来的内容</p>
+</li>
+<li><p>向所有客户端发送消息</p>
+<p>这里我们来读取到已经连接到服务端的所有客户端的Socket，获取PrintWriter向所有的客户端打印（输出）消息</p>
+<pre><code><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendMessage</span>() <span class="keyword">throws</span> IOException {  
+     <span class="keyword">for</span> (Socket client : list) {  
+         pw = <span class="keyword">new</span> PrintWriter(client.getOutputStream(), <span class="keyword">true</span>);  
+         pw.println(msg);  
+     }  
+ }
+</code></pre></li>
+</ol>
+<h4 id="接下来是客户端相关">接下来是客户端相关</h4>
+<p>客户端这里相对简单一些：</p>
+<ol>
+<li><p>首先我们要明确服务端的ip和端口，这里以192.168.1.100为ip，8888为开启的端口</p>
+</li>
+<li><p>我们新建一个Socket对象</p>
+<pre><code><span class="keyword">Socket</span> socket = new <span class="keyword">Socket</span>(<span class="string">"192.168.1.100"</span>, <span class="number">8888</span>);
+</code></pre></li>
+<li><p>我们还是可以去使用一个线程池，去获取控制台的相关信息</p>
+<pre><code>ExecutorService <span class="keyword">exec</span> = Executors.newCachedThreadPool()
+</code></pre></li>
+<li><p>客户端需要把自己输入的东西显示在自己的控制台上，这里基本上和服务端做的事情一样，读取Socket里面的内容，只不过这次读取的是客户端自己的Socket，而不是接收的</p>
+<pre><code>BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket
+            .getInputStream()));
+    String msg;
+        <span class="keyword">while</span> ((msg = br.readLine()) != <span class="keyword">null</span>) {
+            System.<span class="keyword">out</span>.println(msg);
+        }
+</code></pre></li>
+<li><p>核心的部分在Sender这个线程里面，我们所做的事情就是获取PrintWriter，向Socket里面打印（输入）我们的数据</p>
+<pre><code> <span class="type">BufferedReader</span> br = <span class="keyword">new</span> <span class="type">BufferedReader</span>(<span class="keyword">new</span> <span class="type">InputStreamReader</span>(<span class="type">System</span>.<span class="keyword">in</span>));  
+ <span class="type">PrintWriter</span> pw = <span class="keyword">new</span> <span class="type">PrintWriter</span>(socket.getOutputStream(), <span class="built_in">true</span>);  
+         <span class="type">String</span> msg;  
+         <span class="keyword">while</span> (<span class="built_in">true</span>) {  
+             msg = br.readLine();  
+             pw.<span class="built_in">println</span>(msg);  
+
+         }  
+</code></pre></li>
+<li><p>关闭连接，我们这类设定的是输入bye就关闭Socket连接，关闭PrintWriter、Socket和线程池</p>
+<pre><code>    <span class="keyword">if</span> (msg.trim().equals(<span class="string">"bye"</span>)) {  
+                 pw.<span class="keyword">close</span>();  
+                 br.<span class="keyword">close</span>();  
+                 <span class="keyword">exec</span>.shutdownNow();  
+                 <span class="keyword">break</span>;  
+             }  
+</code></pre></li>
+</ol>
+<h5 id="对于网络交互，最重要的是理解Socket的相关传输机制，发送，打印，输入流输出流。我们可以简单的理解为开辟一个通道，打开通道大门，双方通过一个包裹（Socket）交互，需要里面的信息，就把包裹拆了，读取其中的信息，不需要的时候，就把大门关闭。">对于网络交互，最重要的是理解Socket的相关传输机制，发送，打印，输入流输出流。我们可以简单的理解为开辟一个通道，打开通道大门，双方通过一个包裹（Socket）交互，需要里面的信息，就把包裹拆了，读取其中的信息，不需要的时候，就把大门关闭。</h5>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-10T05:45:29.000Z"><a href="/2014/05/10/jdbc连接mysql/">5月 10 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/10/jdbc连接mysql/">JDBC 连接 MySQL</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>以前Java后端写的确实是少，来看看JDBC吧。</p>
+<p>JDBC = Java DataBase Connectivity </p>
+<p>我们要使用JDBC，首先需要配置一下mysql 或者其他的数据库环境，配置在这里就略过了，以下均以mysql为我使用的数据库环境</p>
+<p>测试用数据库名：testjdbc<br>username： root<br>password： 空</p>
+<p>OK，首先我们需要下载一个jar文件，作为我们项目的依赖</p>
+<p>下载地址<a href="http://dev.mysql.com/downloads/connector/j/" target="_blank" rel="external">http://dev.mysql.com/downloads/connector/j/</a></p>
+<p>我们解开下载的压缩包，会看到一个jar文件，加入到我们项目的依赖中，基本配置完成。</p>
+<h4 id="JDBC基本使用">JDBC基本使用</h4>
+<p>1, 加载驱动</p>
+<pre><code><span class="keyword">Class</span>.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);<span class="comment">// 加载Mysql数据驱动</span>
+</code></pre><p>首先，我们需要加载mysql的驱动<br>这里的Class.forName 将class进行解释和初始化，需要在DriveManager里面注册，以初始化驱动</p>
+<p>2，创建数据库连接</p>
+<pre><code><span class="constant"> Connection connection;
+ connection</span> = DriverManager.getConnection(
+                <span class="string">"jdbc:mysql://localhost:3306/testjdbc"</span>, <span class="string">"root"</span>, <span class="string">""</span>);<span class="comment">// 创建数据连接，参数为：连接的ip和端口+数据库的名字，mysql用户名，mysql用户名的密码</span>
+</code></pre><p>这里我们需要连接到这个数据库，getconnection的三个参数，一个是uri，使用mysql的话，就是“jdbc:mysql//“ + ip +”:” +  端口  + “/” + 数据库名，第二个参数是用户名，第三个参数是对应用户名的密码</p>
+<p>3, 创建Statement对象      </p>
+<pre><code>  Statement statement ;
+    <span class="keyword">try</span> {
+       statement = connection.createStatement();
+                } <span class="keyword">catch</span> (SQLException e) {
+
+        e.printStackTrace();
+
+    }  
+</code></pre><p> Statement对象是我们的操纵杆，我们操作数据库需要通过Statement对象来完成</p>
+<p>4，执行SQL语句</p>
+<p>我们创建了Statement的对象之后就可以执行SQL语句了，执行查询的方式就是<code>statement.executeQuery(String sql)</code> 这种形式，比如：</p>
+<pre><code> try {
+       statement <span class="subst">=</span> connection<span class="built_in">.</span>createStatement();
+        <span class="keyword">ResultSet</span> <span class="keyword">resultSet</span> <span class="subst">=</span>statement<span class="built_in">.</span>executeQuery(<span class="string">"select * from test"</span>);
+        <span class="keyword">while</span> (<span class="keyword">resultSet</span><span class="built_in">.</span>next())
+        {
+            <span class="built_in">String</span> name <span class="subst">=</span> <span class="keyword">resultSet</span><span class="built_in">.</span>getString(<span class="string">"name"</span>);
+            int id <span class="subst">=</span> <span class="keyword">resultSet</span><span class="built_in">.</span>getInt(<span class="string">"id"</span>);
+            System<span class="built_in">.</span>out<span class="built_in">.</span>print(name <span class="subst">+</span> <span class="string">"  "</span> <span class="subst">+</span> id <span class="subst">+</span><span class="string">"\n"</span>) ;
+        }
+    } catch (SQLException e) {
+
+        e<span class="built_in">.</span>printStackTrace();
+
+    }
+</code></pre><p> 这里需要注意的一点是，如果执行的sql语句有返回值，那么返回的是一个ResultSet对象，使用方式和迭代器类似。</p>
+<p> 插入，删除操作使用的是<code>statement.executeUpdate(String sql)</code></p>
+<p> 类似这样  </p>
+<pre><code>   try {
+       statement = connection.createStatement();
+       System.out.print("<span class="operator"><span class="keyword">INSERT</span> RESULT :<span class="string">" + statement.executeUpdate("</span><span class="keyword">insert</span> <span class="keyword">into</span> test(name,id) <span class="keyword">values</span> (<span class="string">'123'</span> , <span class="number">7</span>)<span class="string">")+  "</span>\n<span class="string">");
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+    }</span></span>
+</code></pre><p>5， 当不使用数据库时，使用Connection.close关闭数据库连接</p>
+<p>三个主要语句的总结：</p>
+<p>statement.execute(String sql)</p>
+<p>执行sql语句，如果是查询语句（返回ResultSet），那么返回值是true，否则返回值是false</p>
+<p>statement.executeUpdate（String sql）</p>
+<p>执行sql语句，增、删、改使用，返回的是影响的行数</p>
+<p>statement.executeQuery(String sql)</p>
+<p>执行sql语句，执行查询操作，返回的是ResultSet</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-09T14:51:11.000Z"><a href="/2014/05/09/java-泛型相关/">5月 9 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/09/java-泛型相关/">Java泛型相关</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>泛型这个东西，确实是每天都在用，但是却我真的没有仔细好好深入的部分</p>
+<p><code>ArrayList list = new ArrayList&lt;String&gt;();</code></p>
+<p>这就是一个典型的泛型使用，我们创建了一个ArrayList容器，容纳的是String</p>
+<p>泛型是JDK5之后提供的语言特性，创造出来主要是为了提高代码的复用率</p>
+<p>泛型这个更多的是用在“容器”上</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> geneic&lt;T&gt;
+{
+    <span class="keyword">public</span> T <span class="keyword">var</span>;
+    <span class="keyword">public</span> <span class="title">geneic</span>(T c)
+    {
+        <span class="keyword">var</span> = c;
+    }
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">out</span>()
+    {
+        System.<span class="keyword">out</span>.print(<span class="keyword">var</span>.getClass().getName() + <span class="string">"\n"</span>);
+    }
+} 
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args)
+{
+   <span class="keyword">new</span> geneic&lt;Integer&gt;(<span class="number">2</span>).<span class="keyword">out</span>();
+   <span class="keyword">new</span> geneic&lt;Double&gt;(<span class="number">2.2</span>).<span class="keyword">out</span>();
+
+}
+</code></pre><p>这就是我们创建的一个泛型示例，T的意思是type，创建两个generic容器，把一个类型容纳进去。<br>输出的结果是 </p>
+<p><code>java.lang.Integer</code></p>
+<p><code>java.lang.Double</code></p>
+<p>泛型用于创建各种类型的“容器”，在创建的时候，我们还可以加以限制</p>
+<p>1.extends</p>
+<p>用法：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">geneic</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">Number</span>&gt;
+</span>{
+    <span class="keyword">public</span> T var;
+    <span class="keyword">public</span> <span class="title">geneic</span>(T c)
+    {
+        var = c;
+    }
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">out</span>()
+    {
+        System.out.print(var.getClass().getName() + <span class="string">"\n"</span>);
+    }
+} 
+</code></pre><p><code>extends</code>，继承自某个类，这里的<code>T extends Number</code> 把能加载到这个容器的类限制到了Number的子类，那就是说<code>new geneic&lt;Integer&gt;(2)</code>是可以的，但是<code>new geneic&lt;Integer&gt;(&quot;123&quot;)</code>是不可以的</p>
+<p>2,super</p>
+<p>用法基本和extends相同，一样是用来限制容器可以加载的类</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">geneic</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">Number</span>&gt;
+</span>{
+    <span class="keyword">public</span> T var;
+    <span class="keyword">public</span> <span class="title">geneic</span>(T c)
+    {
+        var = c;
+    }
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">out</span>()
+    {
+        System.out.print(var.getClass().getName() + <span class="string">"\n"</span>);
+    }
+} 
+</code></pre><p>super本身就是“超类”的意思，那么也就是把这个容易可以加载的部分限制了一个最小下界T，T以及T的父类都可以加载到这个容器之中</p>
+<h3 id="泛型的一些使用：">泛型的一些使用：</h3>
+<p>我们定义三个类：</p>
+<p>Fruit</p>
+<p>Apple</p>
+<p>RedApple</p>
+<p>继承关系从名字上都可以看出来</p>
+<p>有一点需要注意的是，Java创建对象的时候是不能使用通配符的，<code>List&lt;? extends Fruit&gt; fruitList = new ArrayList&lt;Fruit&gt;();</code>是可以的，但是<code>List&lt;? extends Fruit&gt; fruitList = new ArrayList&lt;?&gt;();</code>则会报错</p>
+<p>对于ArrayList来说，里面只能存放一种类型</p>
+<p>我们这样子来使用泛型：</p>
+<pre><code><span class="keyword">List</span><span class="preprocessor">&lt;?</span> extends Fruit&gt; fruitList = <span class="keyword">new</span> ArrayList&lt;Fruit&gt;();
+
+fruitList.add(<span class="keyword">new</span> Fruit()); <span class="comment">//报错</span>
+fruitList.add(<span class="keyword">new</span> Apple()); <span class="comment">//报错</span>
+</code></pre><p>这么写会编译错误，原因就在于，这里<code>? extends Fruit</code>意味着向里面放入可能是Fruit也可能是某种子类，编译器没有办法保证其安全</p>
+<p>我们换一种方式：</p>
+<pre><code>List&lt;? super Fruit&gt; fruitList = <span class="keyword">new</span> ArrayList&lt;Fruit&gt;();
+
+fruitList.<span class="built_in">add</span>(<span class="keyword">new</span> Apple());
+fruitList.<span class="built_in">add</span>(<span class="keyword">new</span> Fruit());
+</code></pre><p>这样子写不会有编译错误，子类cast成父类是不会有问题的</p>
+<p>还有我们一些要在方法中注意的问题</p>
+<p>上界声明：</p>
+<p>extends可以get，但是不能add</p>
+<pre><code> <span class="keyword">public</span> void upperBound(<span class="keyword">List</span><span class="preprocessor">&lt;?</span> extends Fruit&gt; <span class="keyword">list</span>,Fruit fruit)
+{
+    <span class="keyword">list</span>.get(<span class="number">0</span>); <span class="comment">//get没有问题</span>
+    <span class="keyword">list</span>.add(fruit); <span class="comment">//add这一句报错</span>
+}
+</code></pre><p>原理和上边一样，编译器不能保证类型安全</p>
+<p>下界声明：</p>
+<p>super可以add，但是不能get</p>
+<pre><code> <span class="keyword">public</span> void lowerBound(<span class="keyword">List</span><span class="preprocessor">&lt;?</span> super Fruit&gt; <span class="keyword">list</span>,Fruit fruit)
+{
+    <span class="keyword">list</span>.get(<span class="number">0</span>); <span class="comment">//get会报错</span>
+    <span class="keyword">list</span>.add(fruit); <span class="comment">//add没有问题</span>
+
+}
+</code></pre><p>原理也是同上，List<fruit>这种list里面添加一个fruit/apple是没有问题的，但是返回的时候就没办法说是哪一种类型，不知道是Object还是Fruit，所以报错</fruit></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+
+  <nav id="pagination">
+  
+  
+  <div class="clearfix"></div>
+</nav>
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget about_me">
+  <h3 class="title">ABOUT ME</h3>
+  <ul class="entry">
+    
+    <li><img width="150" title="avatar" src="http://www.gravatar.com/avatar/d8708f776472330c6ced5f336cc1b3f8.png" /></li>
+    
+    
+    <li>微博：<a href="http://weibo.com/u/1651749981" target="_BLANK">@幻之神翼</a></li>
+    
+    <li>Github：<a href="https://github.com/fydx" target="_BLANK">fydx</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/算法/">算法</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/08/23/android事件机制相关/">android事件机制相关</a>
+      </li>
+    
+      <li>
+        <a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/25/android监听来电状况/">android监听来电状况</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget duoshuo_recent_comments">
+  <h3 class="title">最新评论</h3>
+  <ul class="entry ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-title="1" data-show-time="1"></ul>
+</div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+
+  
+<div class="widget links">
+  <h3 class="title">链接</h3>
+  <ul class="entry">
+    
+    <li><a href="http://fydx.cc" target="_BLANK">fydx&#39;s Blog</a></li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 fydx
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div style="display:none;">
+  <!-- 你的百度统计代码 -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0e8f59b5f6a4685006d013b89827075e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</div>
+
+</body>
+</html>

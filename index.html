@@ -1,0 +1,1191 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>fydx&#39;s area</title>
+  <meta name="author" content="fydx">
+  
+  <meta name="description" content="java | android | fydx">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="fydx&#39;s area"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="fydx&#39;s area" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40790188-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">fydx&#39;s area</a></h1>
+  <h2><a href="/">码</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-08-23T13:51:45.000Z"><a href="/2014/08/23/android事件机制相关/">8月 23 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/08/23/android事件机制相关/">android事件机制相关</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>对于android的点击事件处理，一般会涉及到这三个方法</p>
+<ul>
+<li>onTouch （存在于OnTouchListener中）</li>
+<li>onTouchEvent （存在于View，ViewGroup，Activity中）</li>
+<li>onInterceptTouchEvent （存在于ViewGroup中）</li>
+</ul>
+<p>这三个方法的返回值都是Boolean<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2014/08/23/android事件机制相关/#more" class="more-link">全文</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-06-06T07:47:28.000Z"><a href="/2014/06/06/sqlite/">6月 6 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Android的数据库使用的是sqlite，sqlite仅由一个单文件组成，非常非常简单，备份起来，也就是一个.db文件的事儿。</p>
+<p>我们希望的一个方式是，使用单例去控制数据库，增删改查均可在一个单例中去实现。</p>
+<p>Android为我们提供了一个框架，叫SQLiteOpenHepler，我们可以继承这个抽象类，实现我们想要的功能。</p>
+<h2 id="获取数据库实例">获取数据库实例</h2>
+<p>想要实现单例的数据库访问和增删改查，核心就是获取数据库实例，也就是SQliteDatabase，获取了数据库就可以执行各种sql语句，那么数据库就可以任意操作了，下面代码mDB就是我们获取到的数据库，增删改查这些操作，使用mDB.exec(sql)即可。</p>
+<p>getWritableDatabase以读写方式获取的数据库，一旦数据库的空间满了，数据库就无法打开，抛出异常<br>getReadableDatabase也是以读写方式打开数据库，但是一旦数据库空间满了，会再尝试以只读的方式打开数据库</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DBHelper</span> <span class="keyword">extends</span> <span class="title">SQLiteOpenHelper</span> </span>{
+<span class="comment">/* 静态实例 */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> DBHelper mInstance = <span class="keyword">null</span>;
+<span class="comment">/* 数据库名字 */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DB_NAME = <span class="string">"notes.db"</span>;
+<span class="comment">/* 数据库版本，为onUpgrade准备 ，这个数字必须大于等于1 */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DB_VERSION = <span class="number">1</span> ;
+<span class="comment">/* 数据库实例 */</span>
+<span class="keyword">private</span> SQLiteDatabase mDB = <span class="keyword">null</span>;
+<span class="comment">/* context 上下文 */</span>
+<span class="keyword">private</span> <span class="keyword">static</span> Context mContext = <span class="keyword">null</span>;
+
+<span class="keyword">public</span> <span class="keyword">static</span> String CREATE_TABLE_NOTES = <span class="string">"CREATE TABLE IF NOT EXISTS notes (_id INTEGER PRIMARY KEY AUTOINCREMENT,  content TEXT,)"</span>;
+
+<span class="javadoc">/**
+ * 静态构造方法
+ *<span class="javadoctag"> @throws</span> SQLiteException
+ */</span>
+<span class="keyword">private</span> <span class="title">DBHelper</span>() <span class="keyword">throws</span> SQLiteException
+{
+    <span class="comment">/* 参数：1，上下文Context，2，数据库名字，3，CursorFactoty，可以自定义Cursor的创建
+            传入null就是以默认状态，4，数据库版本 */</span>
+    <span class="keyword">super</span>(mContext,DB_NAME,<span class="keyword">null</span>,DB_VERSION);
+    getDB();
+
+}
+
+<span class="javadoc">/**
+ * 获取Database实例
+ */</span>
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getDB</span>()
+{
+    <span class="keyword">try</span>
+    {
+        mDB = getWritableDatabase();
+    }
+    <span class="keyword">catch</span> (Exception e)
+    {
+        Log.e(<span class="string">"Database"</span>,<span class="string">"GET DB ERROR!! "</span> + e.toString());
+        mDB = getReadableDatabase();
+    }
+    Log.i(<span class="string">"Dabatase"</span>,<span class="string">"GET DB SUCCESS!!"</span>);
+}    <span class="javadoc">/**
+ 以单例的方式获取对象
+ */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span>  DBHelper <span class="title">getInstance</span>(Context context)
+{
+    mContext = context;
+    <span class="keyword">if</span> (mInstance == <span class="keyword">null</span>)
+    {
+        mInstance = <span class="keyword">new</span> DBHelper();
+
+    }
+    <span class="keyword">return</span> mInstance;
+
+}
+
+<span class="javadoc">/**
+ * 数据库被首次创建时执行的方法
+ *<span class="javadoctag"> @param</span> sqLiteDatabase
+ */</span>
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span>(SQLiteDatabase sqLiteDatabase) {
+
+    sqLiteDatabase.execSQL(CREATE_TABLE_NOTES);
+}
+
+<span class="javadoc">/**
+ * 数据库传入的版本号与当前数据库版本号不同时执行的方法
+ *<span class="javadoctag"> @param</span> sqLiteDatabase
+ *<span class="javadoctag"> @param</span> i
+ *<span class="javadoctag"> @param</span> i2
+ */</span>
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onUpgrade</span>(SQLiteDatabase sqLiteDatabase, <span class="keyword">int</span> i, <span class="keyword">int</span> i2) {
+    String sql = <span class="string">"DROP TABLE  IF EXISTS notes"</span> ; 
+    sqLiteDatabase.execSQL(sql);
+    sqLiteDatabase.execSQL(CREATE_TABLE_NOTES);
+}
+}
+</code></pre><h2 id="稍微深入一点">稍微深入一点</h2>
+<p>我们会看到一些标准的打开数据库的方式：<br><code>public static SQLiteDatabase openOrCreateDatabase (File file, SQLiteDatabase.CursorFactory factory)</code></p>
+<p>其实SQLiteOpenHelper也就是把这些方法进行了一些封装，方便进行调用</p>
+<pre><code><span class="keyword">public</span> SQLiteOpenHelper(Context context, String name, CursorFactory factory, <span class="keyword">int</span> <span class="keyword">version</span>) {
+     <span class="keyword">this</span>(context, name, factory, <span class="keyword">version</span>, <span class="literal">null</span>);
+ }
+
+ <span class="keyword">public</span> SQLiteOpenHelper(Context context, String name, CursorFactory factory, <span class="keyword">int</span> <span class="keyword">version</span>,
+        DatabaseErrorHandler errorHandler) {
+    <span class="keyword">if</span> (<span class="keyword">version</span> &lt; <span class="number">1</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Version must be &gt;= 1, was "</span> + <span class="keyword">version</span>);
+
+    mContext = context;
+    mName = name;
+    mFactory = factory;
+   mNewVersion = <span class="keyword">version</span>;
+   mErrorHandler = errorHandler;
+ }
+</code></pre><p> 在调用getWritableDatabase或者getReadableDatabase时会调用 getDatabaseLocked，而其中有这么一段：</p>
+<pre><code>  <span class="keyword">if</span> (DEBUG_STRICT_READONLY &amp;&amp; !writable) {
+                   final String <span class="variable">path =</span> mContext.getDatabasePath(mName).getPath();
+                    <span class="variable">db =</span> SQLiteDatabase.openDatabase(path, mFactory,
+                        SQLiteDatabase.OPEN_READONLY, mErrorHandler);
+                } <span class="keyword">else</span> {
+                   <span class="variable">db =</span> mContext.openOrCreateDatabase(mName, mEnableWriteAheadLogging ?
+                            Context.MODE_ENABLE_WRITE_AHEAD_LOGGING : <span class="number">0</span>,
+                           mFactory, mErrorHandler);
+           }
+</code></pre><h2 id="增删改查动作的一些执行方法">增删改查动作的一些执行方法</h2>
+<p>我们操作的是数据库，那么必然可以使用sql语句执行增删改查的动作，但是写sql这种事情需要拼接字符串，毕竟不方便。对于在Android中的sqlite，我们还会有一些另外的方法</p>
+<h3 id="增：">增：</h3>
+<p>使用ContentValues，作为一个键值对。</p>
+<p><code>values.put(&quot;column&quot;,&quot;value&quot;)</code> 第一个参数是列名，第二个参数是值，根据列的数值类型而定，可以传入基本数据类型或String</p>
+<p>put结束之后，调用db.insert即可，</p>
+<p>insert的参数是这样子的 <code>public long insert (String table, String nullColumnHack, ContentValues values)</code></p>
+<p>第一个参数是表名<br>第二个参数是为了避免values是null，如果sql语句的values有值但是前面的列名是null的时候，会给一个默认的列，避免sql语句不合法。ContentValues的put方法，第一个参数是允许为空的，一旦第一个参数是空的，那么就会给它分配到nullColumnHack这个列上面去<br>第三个参数就是ContentValues</p>
+<p>返回值是新插入数据的Row ID</p>
+<pre><code> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertNotes</span>(LocalNote localNote)
+  {
+
+    ContentValues values = <span class="keyword">new</span> ContentValues();
+    values.put(<span class="string">"content"</span>,localNote.getContent());
+    mDB.insert(<span class="string">"notes"</span>,<span class="keyword">null</span>,values);
+    Log.i(<span class="string">"Database"</span>,<span class="string">"INSERT SUCCESS : "</span> + values.toString());
+}
+</code></pre><h3 id="改:">改:</h3>
+<p>和增一样，不过改的时候多了一个where</p>
+<p><code>public int update (String table, ContentValues values, String whereClause, String[] whereArgs)</code></p>
+<p>第一个第二个参数和在增里面的是一样的<br>第三个参数，选择进行哪些数据的更新，其实也就是sql语句里面where之后的东西。这里要是传入的是null会进行所有数据的更新<br>第四个参数，替换第三个参数里面的 “?”</p>
+<p>返回值是影响的列数</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateNotes</span> (LocalNote localNote,<span class="keyword">int</span> id)
+{
+    ContentValues values = <span class="keyword">new</span> ContentValues();
+     values.put(<span class="string">"content"</span>,localNote.getContent());
+     mDB.update(<span class="string">"notes"</span>,values,<span class="string">"_id = "</span>  + String.valueOf(id) ,<span class="keyword">null</span>);
+}
+</code></pre><h3 id="删:">删:</h3>
+<p>删就好说了，关键是where语句</p>
+<p><code>public int delete (String table, String whereClause, String[] whereArgs)</code></p>
+<p>第一个参数，表名<br>第二个参数，where语句之后的东西<br>第三个参数，替换第二个参数里面的 ?</p>
+<p>返回值是影响的列数</p>
+<pre><code>  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteNotes</span> (<span class="keyword">int</span> id)
+{
+    mDB.delete(<span class="string">"notes"</span>,<span class="string">"_id = "</span> +  String.valueOf(id),<span class="keyword">null</span>);
+}
+</code></pre><h3 id="查:">查:</h3>
+<p>不得不说这个API的设计…略蛋疼</p>
+<p><code>public Cursor query (boolean distinct, String table, String[] columns, 
+            String selection, String[] selectionArgs, 
+            String groupBy, String having, 
+            String orderBy, String limit, 
+            CancellationSignal cancellationSignal)</code></p>
+<p>10个参数的方法…</p>
+<ol>
+<li><p>是否去除重复数据，是的话传true，不是的话传false</p>
+</li>
+<li><p>表名</p>
+</li>
+<li><p>查询的列名</p>
+</li>
+<li><p>where后面的部分</p>
+</li>
+<li><p>替代第四个参数的“？”</p>
+</li>
+<li><p>groupBy后面的部分，用于分组</p>
+</li>
+<li><p>having后面的部分，用户过滤</p>
+</li>
+<li><p>orderBy后面的部分，用户排序</p>
+</li>
+<li><p>limit后面的部分，用于分页查询</p>
+</li>
+<li><p>进程中取消操作的信号</p>
+</li>
+</ol>
+<p>返回值是一个Cursor</p>
+<pre><code><span class="keyword">public</span> Cursor <span class="title">getCursorFromFirst</span>()
+{
+   <span class="keyword">return</span>  mDB.query(<span class="keyword">true</span>,<span class="string">"notes"</span>,<span class="keyword">null</span>,<span class="keyword">null</span>,<span class="keyword">null</span>,<span class="keyword">null</span>,<span class="keyword">null</span>,<span class="keyword">null</span>,<span class="keyword">null</span>);
+}
+</code></pre><h2 id="关于数据库的一些ORM框架">关于数据库的一些ORM框架</h2>
+<p>使用数据库的时候，如果要求不是很高，我们完全可以采用一些框架来解决数据库的存储问题，何必自己写这么多？使用ORM框架可能就是一句话可以解决的问题</p>
+<p>关于数据库在android的ORM框架，我个人非常喜欢afinal里面的FinalDB模块，完全不需要任何sql语句即可建立数据库。</p>
+<p>详情可以看这里 <a href="https://github.com/yangfuhai/afinal" target="_blank" rel="external">https://github.com/yangfuhai/afinal</a></p>
+<p>FinalDB可以让操作数据库的事儿一句话就解决了，极其方便：</p>
+<pre><code>FinalDb db = FinalDb.create(this)<span class="comment">;</span>
+User <span class="literal">user</span> = new User()<span class="comment">; //这里需要注意的是User对象必须有id属性，或者有通过@ID注解的属性</span>
+<span class="literal">user</span>.setEmail(<span class="string">"mail@tsz.net"</span>)<span class="comment">;</span>
+<span class="literal">user</span>.setName(<span class="string">"michael yang"</span>)<span class="comment">;</span>
+db.save(<span class="literal">user</span>)<span class="comment">;</span>
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-29T16:58:18.000Z"><a href="/2014/05/30/evernote2/">5月 30 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>我们导入官方的Demo后，大概可以看到目录是这个样子的：</p>
+<p><img src="http://ww2.sinaimg.cn/small/6273b45dgw1egvn1yf8hqj20g40e0gmt.jpg" alt="目录"></p>
+<p>这里面，library是依赖部分，核心的业务处理，如果我们没有额外的要求，这部分就尽管引用好了，不要管他。</p>
+<p>Demo运行HelloEDAM之后就会出现默认启动Activity</p>
+<p><img src="http://ww3.sinaimg.cn/small/6273b45dgw1egvnf0anhjj20nq132jtb.jpg" alt="HelloEDAM"></p>
+<p>如果是自己建立依赖印象笔记SDK的工程，我们就把library设定为一个依赖的Module即可。</p>
+<!-- read more -->
+
+<h2 id="初始设定,建立Session">初始设定,建立Session</h2>
+<p>HelloEDAM这个Activity是集成自ParentActivity的，所以在HelloEDAM中，有些变量需要到ParentActvity中找一下</p>
+<p>在ParentaActivity开头，我们可以找到这么一段代码，这里我们需要输入我们自己的API key和secret才能正常使用。</p>
+<pre><code><span class="comment">// Your Evernote API key. See http://dev.evernote.com/documentation/cloud/</span>
+<span class="comment">// Please obfuscate your code to help keep these values secret.</span>
+<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONSUMER_KEY = <span class="string">"****"</span>;
+<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONSUMER_SECRET = <span class="string">"****"</span>;
+</code></pre><p>我们需要声明一个EvernoteSession变量，并取得它的实例，我们会使用这个对象建立和印象笔记的连接</p>
+<pre><code> <span class="title">EvernoteSession</span> mEvernoteSession;
+ <span class="title">mEvernoteSession</span> = EvernoteSession.getInstance(this, CONSUMER_KEY, CONSUMER_SECRET, EVERNOTE_SERVICE, SUPPORT_APP_LINKED_NOTEBOOKS);
+</code></pre><p>EVERNOTE_SERVICE是一个 EvernoteSession.EvernoteService 类型，指Evernote的服务，我们现在暂时只能使用沙箱服务，所以，只能这样子定义 </p>
+<pre><code><span class="attribute"> EvernoteSession.EvernoteService EVERNOTE_SERVICE </span>=<span class="string"> EvernoteSession.EvernoteService.SANDBOX;</span>
+</code></pre><p>SUPPORT_APP_NOTEBOOKS是一个boolean对象，true代表只能连接一个笔记本，而false代表可以连接多个</p>
+<p>注意，Demo的这些变量都是定义在ParentActivity里面的</p>
+<p>还有，注意在manifest里面需要添加一个Activity，为后面登入的Activity做注册（这个Activity存在于依赖包里面，这里不注册后面没办法登录了）</p>
+<pre><code>  &lt;activity android:<span class="variable">name=</span><span class="string">"com.evernote.client.android.EvernoteOAuthActivity"</span> android:<span class="variable">configChanges=</span><span class="string">"orientation|keyboardHidden"</span> /&gt;
+</code></pre><p>当然，还不要忘记添加连网权限</p>
+<pre><code><span class="tag">&lt;<span class="title">uses-permission</span> <span class="attribute">android:name</span>=<span class="value">"android.permission.INTERNET"</span> &gt;</span><span class="tag">&lt;/<span class="title">uses-permission</span>&gt;</span>
+</code></pre><h2 id="Log_in/out_登入登出模块，Oauth验证">Log in/out 登入登出模块，Oauth验证</h2>
+<p>我以为印象笔记是类似微博的那种SSO的方式…结果不是那样子的，他是打开一个网页进行Oauth授权<br>SSO和Oauth这两种方式，各有千秋吧。</p>
+<p>取得EvernoteSession的实例之后，ß我们就可以用我们之前在沙盒里面注册的帐号了</p>
+<pre><code>mEvernoteSession.authenticate(<span class="keyword">this</span>);
+</code></pre><p>这一句话就可以进行Evernote的Oauth认证</p>
+<p>登出同样是一句话</p>
+<pre><code>mEvernoteSession.logOut(<span class="keyword">this</span>);
+</code></pre><p>如果要验证的话，那么可以使用下一句话验证是否登录进去</p>
+<pre><code>mEvernoteSession.isLoggedIn()
+</code></pre><h2 id="UserStore_获取用户信息">UserStore 获取用户信息</h2>
+<p>我们在经过Oauth认证之后可以使用UserStore方式获取用户信息</p>
+<p>这里官网上也没有做更详细的解释，基本都是摸索着来，而且虽然官网说是用UserStore，更详细的应该说是使用AsyncUserStoreClient，请看以下代码</p>
+<pre><code> <span class="comment">/* 如果已经登录成功了 */</span>
+    <span class="keyword">if</span> (mEvernoteSession.isLoggedIn())
+    {
+        AsyncUserStoreClient mUserStoreClient = <span class="keyword">null</span>;
+        <span class="keyword">try</span> {
+            <span class="comment">/* 获取AsyncUserStoreClient对象 */</span>
+            mUserStoreClient = mEvernoteSession.getClientFactory().createUserStoreClient();
+            <span class="comment">/* 异步获取用户信息 */</span>
+            mUserStoreClient.getUser(<span class="keyword">new</span> OnClientCallback&lt;User&gt;() {
+                <span class="annotation">@Override</span>
+                <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSuccess</span>(User data) {
+                    Log.i(TAG,data.toString());
+                    Toast.makeText(MainActivity.<span class="keyword">this</span>,data.getUsername() + <span class="string">" 已绑定成功"</span>,Toast.LENGTH_LONG).show();
+                }
+
+                <span class="annotation">@Override</span>
+                <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onException</span>(Exception exception) {
+
+                }
+            });
+        } <span class="keyword">catch</span> (TTransportException e) {
+            e.printStackTrace();
+        }
+
+    }
+</code></pre><p>  data打印出来会是这个样子</p>
+<pre><code>  <span class="tag">User</span>(<span class="tag">id</span><span class="pseudo">:xxxxx</span>, <span class="tag">username</span><span class="pseudo">:xxxx</span>, <span class="tag">privilege</span><span class="pseudo">:NORMAL</span>, <span class="tag">active</span><span class="pseudo">:true</span>, <span class="tag">shardId</span><span class="pseudo">:s1</span>, <span class="tag">accounting</span><span class="pseudo">:Accounting(uploadLimit</span><span class="pseudo">:62914560</span>, <span class="tag">uploadLimitEnd</span><span class="pseudo">:1403766000000</span>, <span class="tag">uploadLimitNextMonth</span><span class="pseudo">:62914560</span>, <span class="tag">premiumServiceStatus</span><span class="pseudo">:NONE))</span>
+</code></pre><p>  选择我们感兴趣的地方get即可</p>
+<h2 id="NoteStore_写入笔记信息">NoteStore 写入笔记信息</h2>
+<p>写入笔记信息关键是使用Note这个类作为内容提供，同时我们需要了解一些ENML（印象笔记的格式）的东西，使用AsyncNoteStoreClient进行写入</p>
+<p>  Note可以setTitle和setContent，我们可以非常方便的进行数据的写入。</p>
+<p>  使用ENML格式，需要加一些文件头，Evernote在它的Util里面有提供。</p>
+<p>  AsyncNoteStoreClient的使用方式和AsyncUserStoreClient的使用方法很像。</p>
+<pre><code>  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeNote</span>(View v)
+{
+     EditText titleEditText = (EditText)findViewById(R.id.editText_title);
+     EditText contentEditText = (EditText)findViewById(R.id.editText_content);
+
+    <span class="keyword">try</span> {
+        createNote(titleEditText.getText().toString(),contentEditText.getText().toString());
+    } <span class="keyword">catch</span> (TTransportException e) {
+        e.printStackTrace();
+    }
+}
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createNote</span>(String title, String content) <span class="keyword">throws</span> TTransportException {
+    <span class="keyword">if</span> (mEvernoteSession.isLoggedIn()) {
+        Note note = <span class="keyword">new</span> Note();
+        note.setTitle(title);
+        note.setContent(EvernoteUtil.NOTE_PREFIX + content + EvernoteUtil.NOTE_SUFFIX);
+        mEvernoteSession.getClientFactory().createNoteStoreClient().createNote(note, <span class="keyword">new</span> OnClientCallback&lt;Note&gt;() {
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSuccess</span>(<span class="keyword">final</span> Note data) {
+                Toast.makeText(getApplicationContext(), data.getTitle() + <span class="string">" has been created"</span>, Toast.LENGTH_LONG).show();
+            }
+
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onException</span>(Exception exception) {
+                Log.e(TAG, <span class="string">"Error creating note"</span>, exception);
+            }
+        });
+    }
+}
+</code></pre><h2 id="总结">总结</h2>
+<p>读取用户信息，写入简单笔记，对于Evernote的SDK来说，非常简单，在经历了沙箱机制不爽之后，使用Evernote 的android SDK真是赏心悦目，另外他的异步方法封装的很好，使用的时候都不需要考虑异步调用的问题</p>
+<p>另外，关于SDK的使用方法，印象笔记的dev站点还不如Github主页Readme的清楚…所以，还是看Github吧。</p>
+<p>下次，我们更加深入的去了解Note，上传更多的元素。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-27T16:12:17.000Z"><a href="/2014/05/28/evernote1/">5月 28 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="转投到印象笔记">转投到印象笔记</h2>
+<p>印象笔记是个好东西呀，以前我用的一直是为知笔记，主要是因为Windows下客户端表现尚可，原生支持markdown，上传流量给的很大（相对于印象笔记），速度也比较快，移动客户端做的也还行…</p>
+<p>但是，但是，我在用mac的时候，对比一下mac版本的印象笔记和为知笔记，为知笔记完全被比下去了，可能也和国内外mac的使用率有关系吧，印象笔记mac版简直比windows版还要优秀，并且现在有了马克飞象这种神器，用markdown写印象笔记毫无压力，所以，我义无反顾地转投到了印象笔记的怀抱。</p>
+<p>我是用的是国内版的印象笔记，感觉印象笔记比Evernote International的同步速度能快不少，功能上现在基本也没什么差别了。</p>
+<h2 id="获取印象笔记API_Key">获取印象笔记API Key</h2>
+<p>印象笔记是个好工具，它开放了相关的API，可以让我们Connect to Evernote。</p>
+<p>首先我们需要到 <a href="http://dev.yinxiang.com/doc/" target="_blank" rel="external">http://dev.yinxiang.com/doc/</a> 来申请一个API Key，申请的时候，注意印象笔记是有两种API key的，分为 基本访问权限 和 完整访问权限，区别可以点这里<a href="http://dev.yinxiang.com/doc/articles/permissions.php" target="_blank" rel="external">http://dev.yinxiang.com/doc/articles/permissions.php</a> 查看 </p>
+<p><img src="http://ww2.sinaimg.cn/large/6273b45dgw1egtbayt9cdj212a0o8jt9.jpg" alt="两种API Key的权限"></p>
+<p>简而言之，基本访问权限只能写入笔记，而完全访问权限可以读取以前的笔记，还可以写入笔记。</p>
+<p>那么，我们就直接选用一个完全访问权限就好了？这里还是得按需求，因为正式上线的时候才需要印象笔记的审核，你需要给出使用完全访问权限的理由，否则，不予通过。</p>
+<p>印象笔记通过一个沙箱(sandbox)机制，使得如果你这个app没有通过审核的话，只能在印象笔记的沙箱服务器(sandbox.evernote.com)使用，而不能连接到真正的生产服务器。</p>
+<p>另外…我不知道为什么，申请API的时候他说会给我的邮箱里面发送一个含有API key和API secret的邮件，但是我申请了两个，我的邮箱都没收到这个邮件……所以，记得保存API key和API secert。</p>
+<h2 id="关于印象笔记API的沙箱机制">关于印象笔记API的沙箱机制</h2>
+<p>这个沙箱机制，也许设计的初衷是好的，使调试不会影响到实际的服务器，但是，最终，这个机制让开发者多多少少会遇到一些麻烦。</p>
+<p>微博对API的控制方式是，我可以添加测试帐号，我只能有几个测试帐号可以做API的测试，审核通过后，非测试帐号也可以进行API的操作了。但是印象笔记呢，要求你直接在一个沙箱服务器里面创建一个新的帐号，这个帐号和印象笔记，Evernote International都不相关，但是沙箱里面任何一个帐号都可以使用你的API。</p>
+<p>好了，也许和上述和微博的对比，还没发现“麻烦“所在，麻烦的就在于，你在使用印象笔记的时候，见过“登录到印象笔记”，“登录到Evernote International”的选项，你见过“登录到沙箱”这个选项么…</p>
+<p>所以，需要更改一些设置才能登录：</p>
+<p>首先我们在沙箱中注册：<br><a href="https://sandbox.evernote.com/Registration.action" target="_blank" rel="external">https://sandbox.evernote.com/Registration.action</a></p>
+<p>接下来，我们需要对客户端进行一些修改：</p>
+<p>对于Windows客户端：</p>
+<blockquote>
+<ol>
+<li>在“文件”菜单中退出印象笔记。如果出现提示框，就确认你需要完全退出印象笔记。</li>
+<li>运行 regedit 注册表编辑器</li>
+<li>打开 HKEY_CURRENT_USER\Software\Evernote 键</li>
+<li>修改 SyncServiceUrl 的值，把 app.yinxiang.com 改为 sandbox.evernote.com</li>
+<li>退出 regedit 注册表编辑器</li>
+<li>打开印象笔记，并登陆你的沙箱帐户，<strong>注意：你需要在你的沙箱账户的用户名后面加上”#sandbox.evernote.com” （不包含引号）</strong></li>
+</ol>
+</blockquote>
+<p>对于Android客户端（待验证）</p>
+<blockquote>
+<ol>
+<li>关闭印象笔记应用</li>
+<li>复制这个<a href="http://dev.yinxiang.com/media/dev/bootstrap" target="_blank" rel="external">引导文件</a>到你的 SD 中的 <strong>“/sdcard/Evernote”</strong> 目录，<strong>这个引导文件应该是需要被命名为bootstrap</strong></li>
+<li>重启印象笔记应用</li>
+</ol>
+</blockquote>
+<p>对于其他移动客户端（非Android）</p>
+<blockquote>
+<p>注销当前的印象笔记帐户。在登陆界面，输入你的沙箱用户名和密码，并在用户名后加上 “#sandbox.evernote.com”，然后登陆。例如，要使用沙箱帐号 “foo” 和密码 “bar” 登陆, 你需要这样输入：     </p>
+<p>用户名： foo#sandbox.evernote.com </p>
+<p>密码： bar</p>
+</blockquote>
+<p>官方文档在此：<a href="http://dev.yinxiang.com/doc/articles/testing.php" target="_blank" rel="external">http://dev.yinxiang.com/doc/articles/testing.php</a></p>
+<p>我对官网上面的文档做了一些简单的修改，修改的部分是粗体字，因为…我一开始按照官网的指示就没成功啊摔！！！</p>
+<p>Android那个，复制引导文件，就没说那个引导文件要叫什么名字！！！</p>
+<p>另外Android那个，我加了一个待验证，因为我现在都没成功的在Android上面登录上我的沙箱账户啊！！！</p>
+<p>最让我难以理解的，印象笔记的中文（dev.yinxiang.com）和英文网站(dev.evernote.com)上面的东西居然会不一样！</p>
+<p>英文官网的，对于Android客户端的第二条是这么说的</p>
+<blockquote>
+<p>Copy the bootstrap file to the /sdcard/Android/data/com.evernote/files/ directory</p>
+<p>Note: devices w/o an SDCARD drive will be /Android/data/com.evernote/files/</p>
+</blockquote>
+<p>我尝试了这个方法，还是失败了…</p>
+<p>如果你看到了我这篇文章而且成功在Android客户端上登录沙箱账户，一定要在下面留言…</p>
+<p>另外，没有mac版？</p>
+<p>印象笔记你mac版做的这么好，没说怎么登录沙箱？</p>
+<p>我在Evernote开发者论坛上找到一个Evernote Employee说的一个在mac上登录沙箱环境的回复，我没有亲身试过，大家需要的可以试试看</p>
+<blockquote>
+<ol>
+<li>Quit Evernote from the elephant icon in your menu bar.<br>Open a terminal.</li>
+<li>Move your existing Evernote data directory:<br>mv ~/Library/Application\ Support/Evernote ~/Library/Application\ Support/Evernote.production</li>
+<li>Change the API endpoings by running the three commands below:    <blockquote>
+<p>defaults delete com.evernote.Evernote<br> defaults write com.evernote.Evernote noteStoreURL <a href="http://sandbox.evernote.com/edam/note" target="_blank" rel="external">http://sandbox.evernote.com/edam/note</a><br> defaults write com.evernote.Evernote userStoreURL <a href="https://sandbox.evernote.com/edam/user" target="_blank" rel="external">https://sandbox.evernote.com/edam/user</a>    </p>
+</blockquote>
+</li>
+<li>Open Evernote and log in to your sandbox account</li>
+</ol>
+</blockquote>
+<p>OK,我们这就算搞定了蛋疼的沙箱环境。</p>
+<h2 id="下载印象笔记Android_SDK">下载印象笔记Android SDK</h2>
+<p>这是印象笔记 Android SDK 项目托管的地址：<br><a href="https://github.com/evernote/evernote-sdk-Android" target="_blank" rel="external">https://github.com/evernote/evernote-sdk-Android</a></p>
+<p>我们按照Readme里面进行项目导入即可。我用的IDE是Idea，直接导入project没有遇到什么问题，运行Simple的时候，注意选择HelloEDAM而不是Simple Note。</p>
+<h2 id="一些总结">一些总结</h2>
+<p>略蛋疼的沙箱机制，让我登录就搞了一晚上（因为Android死活登录不进去……），Evernote的文档资料，中文的部分不算特别全，尤其是Android，有些东西还是看Simple和SDK Github里面的Readme吧…</p>
+<p>其实，要是仅仅做分享的话，没必要使用印象笔记SDK，只需要使用ShareSDK来做就好了，会比使用印象笔记简单很多，顺带还能分享到更多的平台。如果说对印象笔记有其他的需求，那么我们还是继续来深入研究一下吧。</p>
+<p>接下来会给大家带来印象笔记Android SDK 使用日记 二 ——— SDK Simple 分析。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-24T16:46:30.000Z"><a href="/2014/05/25/android监听来电状况/">5月 25 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/25/android监听来电状况/">android监听来电状况</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>建立一个BoardCastReceiver进行监听</p>
+<pre><code><span class="javadoc">/**
+* Created by libin on 14-5-24.
+*/</span>
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ComingCallReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span> </span>{
+
+<span class="keyword">private</span> <span class="keyword">final</span> String TAG = <span class="string">"PhoneState"</span>;
+<span class="keyword">private</span> <span class="keyword">static</span> String phoneNumber = <span class="keyword">null</span>;
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span>(Context context, Intent intent) {
+    String action = intent.getAction();
+    <span class="keyword">if</span>(intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)){
+        <span class="comment">//拨打电话的状况</span>
+    }<span class="keyword">else</span>{
+        <span class="comment">//android没有接收来电的action，所以，不是拨打电话，就是接收来电</span>
+        doReceivePhone(context, intent);
+    }
+
+}
+
+<span class="javadoc">/**
+ * 处理来电
+ *<span class="javadoctag"> @param</span> context
+ *<span class="javadoctag"> @param</span> intent
+ */</span>
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doReceivePhone</span>(Context context, Intent intent) {
+
+    TelephonyManager telephony =
+            (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+    <span class="keyword">int</span> state = telephony.getCallState();
+    <span class="keyword">switch</span>(state){
+        <span class="keyword">case</span> TelephonyManager.CALL_STATE_RINGING:
+            Log.i(TAG, <span class="string">"来电 ："</span>+phoneNumber);
+            <span class="comment">/* 这里只有在来电的时候才能获取到PhoneNumber，其他的时候用这种方式获取的是null，
+                所以PhoneNumber使用一个静态变量来保存 */</span>
+            phoneNumber = intent.getStringExtra(
+                    TelephonyManager.EXTRA_INCOMING_NUMBER);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> TelephonyManager.CALL_STATE_IDLE:
+            Log.i(TAG, <span class="string">"挂断 ："</span>+phoneNumber);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> TelephonyManager.CALL_STATE_OFFHOOK:
+            Log.i(TAG, <span class="string">"通话 ："</span>+phoneNumber);
+            <span class="keyword">break</span>;
+    }
+}
+}
+</code></pre><p> 当然，我们还需要找个地方（Activity中或Service中）注册一下Receiver</p>
+<pre><code> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerIt</span>() {
+    Log.i(<span class="string">"PhoneState"</span>, <span class="string">"registerIt"</span>);
+    ComingCallReceiver  comingCallReceiver= <span class="keyword">new</span> ComingCallReceiver();
+    IntentFilter intentFilter = <span class="keyword">new</span> IntentFilter();
+    intentFilter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
+    intentFilter.setPriority(Integer.MAX_VALUE);
+    registerReceiver(comingCallReceiver, intentFilter);
+}
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-24T08:03:14.000Z"><a href="/2014/05/24/lcs最长公共子串/">5月 24 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/24/lcs最长公共子串/">LCS最长公共子串</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>LCS（最长连续公共子串）算法</p>
+<p>假设我们有两个字符串 ABCDMARK1234  ， MARKDOWN34 </p>
+<p>那么最长公共子串就是MARK</p>
+<p>我们建立假设原来的子串分别为A，B，我们建立一个新的数组C，去记录最长的连续子串的位置。</p>
+<p>递推公式：<br>C[i,j]  =  0  (A[i]不等于B[j])<br>        =  1  (A[i]等于B[i]且i或j小于1)<br>        = C[i-1,j-1] + 1 (A[i]等于B[j])</p>
+<p>使用m，n记录C数组中最大的位置</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> Main {
+
+<span class="keyword">public</span> <span class="keyword">static</span> String A = <span class="string">"ABCDMARK1234"</span> ;
+<span class="keyword">public</span> <span class="keyword">static</span> String B = <span class="string">"MARKDOWN"</span> ;
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span>[][] C ;
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> m;
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> n;
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> maxValue = <span class="number">0</span>;
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args)
+{
+    <span class="comment">/* 创建二维数组C */</span>
+    C = <span class="keyword">new</span> <span class="keyword">int</span>[A.length()][B.length()];
+    <span class="comment">/* i,j循环 */</span>
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span> ; i&lt;A.length();i++)
+        <span class="keyword">for</span> (<span class="keyword">int</span> j =<span class="number">0</span> ; j&lt;B.length(); j++)
+        {
+            <span class="keyword">if</span> (A.charAt(i) == B.charAt(j)) {
+                <span class="comment">/* 如果i或者j小于1，那么当前的值直接置为1 */</span>
+                <span class="keyword">if</span> (i&lt;<span class="number">1</span> || j &lt;<span class="number">1</span>)
+                    C[i][j] = <span class="number">1</span>;
+                <span class="keyword">else</span>{
+                    C[i][j] = C[i - <span class="number">1</span>][j - <span class="number">1</span>] + <span class="number">1</span>;
+                }
+
+                <span class="keyword">if</span> (C[i][j] &gt; maxValue)
+                {
+                    maxValue = C[i][j];
+                    m = i;
+                    n = j;
+                }
+            }
+            <span class="keyword">else</span>
+                C[i][j] = <span class="number">0</span>;
+
+        }
+    <span class="comment">/* 将m和n指向匹配第一个字符的位置 */</span>
+    m = m - maxValue + <span class="number">1</span> ;
+    n = n - maxValue + <span class="number">1</span> ;
+    <span class="comment">/* 循环输出 */</span>
+    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;maxValue;i++)
+    {
+        System.<span class="keyword">out</span>.print(A.charAt(m));
+        m++;
+    }
+}
+}
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-14T11:54:35.000Z"><a href="/2014/05/14/算法-矩阵链乘积/">5月 14 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/14/算法-矩阵链乘积/">算法-矩阵链乘积</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h4 id="矩阵链问题描述：">矩阵链问题描述：</h4>
+<blockquote>
+<p>给定n个矩阵构成的一个链<a1 ,a2="" ,a3="" ,.......an="">，其中i=1,2,…n，矩阵A的维数为pi-1 pi ，对乘积 A1 A2 …An  以一种最小化标量乘法次数的方式进行加全部括号。</a1></p>
+<p>括号其乘积的顺序是会影响到需计算乘积所需简单算术运算的数目，即其效率。例如，设A为一10×30矩阵，B为30×5矩阵与C为5×60矩阵，则<br>(AB)C 有 (10×30×5) + (10×5×60) = 1500 + 3000 = 4500 个运算<br>A(BC) 有 (30×5×60) + (10×30×60) = 9000 + 18000 = 27000 个运算</p>
+<p>我们的目标就是找出来矩阵相乘的最佳顺序,得到最小的相乘次数</p>
+</blockquote>
+<p>对于矩阵链问题，最好的解决方法是动态规划。</p>
+<p>首先我们来找一下最优子结构：</p>
+<p>我们需要计算整个矩阵链的<a1 ,a2="" ,a3="" ,.......an="">的最优解，计算过程中，肯定有一个k（1<k<n）将整个矩阵链分成两部分，让矩阵链的计算量最小。然后我们可以继续分解这个问题，<a1..ak> <ak ...="" an="">这两部分，寻找这两部分的最优解。</ak></k<n）将整个矩阵链分成两部分，让矩阵链的计算量最小。然后我们可以继续分解这个问题，<a1..ak></a1></p>
+<p>再具体一点，最优子结构就是指：矩阵链<ai ...="" aj="">的最优解如果是在k(i<k<j)处加了括号的话，那么矩阵链<ai ..="" ak="">和<ak+1...j>也是最优解。我们可以根据把问题分割，以构建总问题的最优解。</ak+1...j></k<j)处加了括号的话，那么矩阵链<ai></ai></p>
+<p>我们再来寻找状态和状态转移方程：</p>
+<p>我们确定一个状态m[i,j] ,这指的是计算矩阵链<ai ...="" aj=""> 所需要的乘法次数的最小数目。</ai></p>
+<p>我们在按照之前的思路进行分解，以k做左右两边的分解，我们就可以得到递归式：</p>
+<p>m[i,j] =  0   (i=j)<br>       =  min(i&lt;=k&lt;j) {m[i,k]+m[k+1,j]+pi-1pkpj} (i&lt;j)</p>
+<p>我们把k从i到j都试一次，取最小值。</p>
+<p>这个时候，我们如果使用递归求解，时间复杂度会变为指数级，我们为了降低时间复杂度，可以再来开一个数组s[i][j]记录矩阵链<ai ...="" aj="">取得最优时k的值。</ai></p>
+<p>代码如下，关于代码说明写在代码注释中：</p>
+<pre><code><span class="javadoc">/**
+ * Created by libin on 14-5-15.
+ */</span>
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>{
+<span class="comment">/* 这里虽然是5个数字，但是实际上是4个矩阵 */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> Data[] = {<span class="number">3</span>,<span class="number">5</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">10</span>};
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args)
+{
+  System.out.print(<span class="string">"Result :"</span> +  maxChain(Data));
+}
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">maxChain</span>(<span class="keyword">int</span>[] A)
+{
+    <span class="comment">/* m 对应保存从Ai到Aj的最小的乘的次数 也就是从第i个矩阵到第j个矩阵，所以A[0]的元素都是没用的 */</span>
+    <span class="keyword">int</span>[][] m = <span class="keyword">new</span> <span class="keyword">int</span>[A.length][A.length];
+    <span class="comment">/* s 对应保存从Ai到Aj的最佳的k ，和m一样，数组第一行是无效的*/</span>
+    <span class="keyword">int</span>[][] s = <span class="keyword">new</span> <span class="keyword">int</span>[A.length][A.length];
+    <span class="comment">/* 设定一个大数，为了之前把数组m里面所有的值标记为无限大 */</span>
+    <span class="keyword">int</span> MAX = <span class="number">10000000</span>;
+    <span class="comment">/* n是数组最大下标，这个值可以省略掉 */</span>
+    <span class="keyword">int</span> n = A.length-<span class="number">1</span>;
+    <span class="comment">/* 我们事前首先把所有的数字置成0 */</span>
+    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n+<span class="number">1</span>;i++){
+        m[i][i]=<span class="number">0</span>;
+    }
+    <span class="comment">/* l是矩阵的个数，只有两个以上矩阵相乘的时候才会考虑矩阵链乘积的问题，所以直接将l置为2*/</span>
+    <span class="keyword">for</span> (<span class="keyword">int</span> l = <span class="number">2</span>; l &lt; A.length;l++)
+    {
+        <span class="comment">/*i从1开始进行，因为本次循环会有l个矩阵参与运算，所以到length - l + 1 的时候循环终止*/</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>;i&lt;A.length-l+<span class="number">1</span>;i++)
+        {
+            <span class="comment">/* 我们把数组m里面每个有效的值置为无限大 j是终结的位置，m[i][j]记录的是从i开始，到j结束的算术乘动作最小值*/</span>
+            <span class="keyword">int</span> j = i + l - <span class="number">1</span>;
+            m[i][j] = MAX;
+            <span class="comment">/* 我们来遍历所有可能的k，找一下最合适的分割点 */</span>
+            <span class="keyword">for</span> (<span class="keyword">int</span> k = i ; k&lt; j ;k++)
+            {
+                <span class="keyword">int</span> result = m[i][k] + m[k+<span class="number">1</span>][j] + A[i-<span class="number">1</span>]*A[k]*A[j];
+                <span class="keyword">if</span> (result &lt; m[i][j])
+                {
+                    m[i][j] = result;
+                    s[i][j] = k;
+                }
+
+            }
+
+        }
+    }
+    System.out.print(<span class="string">"display m :"</span> + <span class="string">"\n"</span>);
+    display(m);
+    System.out.print(<span class="string">"---------------"</span> + <span class="string">"\n"</span>);
+    System.out.print(<span class="string">"display s:"</span> + <span class="string">"\n"</span>);
+    display(s);
+    <span class="comment">/*因为第一行无效，所以我们实际上返回的是第二行数组中最后一个值 对于样例数据来说，i=1,j=4 */</span>
+    <span class="keyword">return</span> m[<span class="number">1</span>][A.length-<span class="number">1</span>];
+}
+
+<span class="javadoc">/**
+ * 测试所用，适用于打印m或者s数组
+ *<span class="javadoctag"> @param</span> array
+ */</span>
+<span class="keyword">static</span> <span class="keyword">void</span> display(<span class="keyword">int</span> [][] array){
+    <span class="keyword">int</span> n = array[<span class="number">0</span>].length;
+    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++){
+        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;n;j++){
+
+                System.out.print(array[i][j]+<span class="string">" "</span>);
+        }
+        System.out.print(<span class="string">"\n"</span>);
+    }
+}
+}
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-13T07:37:41.000Z"><a href="/2014/05/13/算法-动态规划相关/">5月 13 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/05/13/算法-动态规划相关/">算法-动态规划相关</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>动态规划是一种很长见的算法，经典的题目如LCS，LIS都会用到动态规划。</p>
+<p>动态规划的特点是，动态规划会存储上一个状态的值，用递推公式去推下一个状态，保存起来，最终来得到最优解。</p>
+<p>我们需要找到某个状态的最优解，推下去得到其他状态的最优解。</p>
+<p>我们来通过两个经典的背包问题来说明动态规划：</p>
+<h4 id="0-1背包问题">0-1背包问题</h4>
+<blockquote>
+<p>There are 5 items that have a value and weight list below, the knapsack can contain at most 100 Lbs</p>
+<p>values: 20 30 65 40 60</p>
+<p>weight: 10 20 30 40 50</p>
+<p>Solve the problem as 0/1 knapsack.</p>
+</blockquote>
+<p>0-1背包问题，就是有一个容量是V的背包，第i件的重量是w[i],价值是v[i],每个物品只能装一次，那么如何让背包能装的价值最大</p>
+<p>理论上这个问题也可以用贪心去解决，但是贪心不一定能得出来合适的解，我们使用动态规划来解决这个问题</p>
+<p>0-1背包，指的就是对于一个物品只有两个选择：放，或者不放</p>
+<p>动态规划需要明确两个方面：状态和状态转移方程</p>
+<p>我们使用f[i][v]表示前i个物品放入容量为v的背包可以获得的最大价值<br>f[i][v] 就是一个状态</p>
+<p>状态转移方程是：</p>
+<p>f[i][v] = max{f[i-1][v]，f[i-1][v-w[i]]+v[i]}</p>
+<p>f[i-1][v] 就是这个物品不放的情况下状态</p>
+<p>f[i-1][v-w[i]] + w[i] 就是在放这个物品的情况下的状态</p>
+<p>贴上代码，详情在注释中有体现：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> Main {
+<span class="comment">/* 容量 */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> V = <span class="number">100</span>;
+<span class="comment">/* 物品总数 */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> I = <span class="number">5</span>;
+<span class="comment">/* 各个物品的values */</span>
+<span class="keyword">int</span>[] values = {<span class="number">20</span>,<span class="number">30</span>,<span class="number">65</span>,<span class="number">40</span>,<span class="number">60</span>};
+<span class="comment">/* 各个物品的weight */</span>
+<span class="keyword">int</span>[] weight = {<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>,<span class="number">40</span>,<span class="number">50</span>};
+<span class="comment">/* 建立储存状态的二维数组 ，表示在V容量装前I个物品的价值，加了1是为了让数组下标I就是实际的件数，V就是实际的容量*/</span>
+<span class="keyword">int</span>[][] f = <span class="keyword">new</span> <span class="keyword">int</span>[I+<span class="number">1</span>][V+<span class="number">1</span>];
+
+<span class="keyword">public</span> <span class="keyword">int</span> <span class="title">knapSack</span>()
+{
+    <span class="comment">/* i代表装物品的件数，我们可以直接从1开始循环，因为i=0的时候没有意义（一个物品都不装，肯定价值是0）*/</span>
+    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=I;i++)
+    {
+        <span class="comment">/* j代表容量，容量是0的时候也没有意义，所以直接从1开始循环 */</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=V;j++) {
+                <span class="comment">/*如果我没有装的下这个物品的容量，那么和之前的价值是一样的*/</span>
+                <span class="keyword">if</span> (j &lt; weight[i-<span class="number">1</span>])
+                    f[i][j] = f[i][j - <span class="number">1</span>];
+                <span class="keyword">else</span>
+                    <span class="comment">/*我有了装的下这个物品的容量，那么我们就上我们的递归公式，在装和不装中取一个和谐的值 */</span>
+                    f[i][j] = max(f[i - <span class="number">1</span>][j], f[i - <span class="number">1</span>][j - weight[i-<span class="number">1</span>]] + values[i-<span class="number">1</span>]);
+                <span class="comment">/*测试输出每次的i,j,f */</span>
+                System.<span class="keyword">out</span>.print(<span class="string">"i:"</span> + i + <span class="string">" j:"</span> + j + <span class="string">" f:"</span> + f[i][j] + <span class="string">"\n"</span>);
+
+        }
+    }
+    <span class="comment">/* 返回最大值 */</span>
+    <span class="keyword">return</span> f[I][V];
+}
+<span class="comment">/* 取两个数大的那一个 */</span>
+<span class="keyword">public</span> <span class="keyword">int</span> <span class="title">max</span>(<span class="keyword">int</span> a,<span class="keyword">int</span> b)
+{
+    <span class="keyword">if</span> (a&lt; b )
+        <span class="keyword">return</span> b;
+    <span class="keyword">else</span>
+        <span class="keyword">return</span> a;
+}
+
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args)
+{
+    Main main = <span class="keyword">new</span> Main();
+    System.<span class="keyword">out</span>.print(main.knapSack());
+
+}
+}
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination">
+  
+  
+    <a href="/page/2/" class="alignright next">下一页</a>
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget about_me">
+  <h3 class="title">ABOUT ME</h3>
+  <ul class="entry">
+    
+    <li><img width="150" title="avatar" src="http://www.gravatar.com/avatar/d8708f776472330c6ced5f336cc1b3f8.png" /></li>
+    
+    
+    <li>微博：<a href="http://weibo.com/u/1651749981" target="_BLANK">@幻之神翼</a></li>
+    
+    <li>Github：<a href="https://github.com/fydx" target="_BLANK">fydx</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/算法/">算法</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/08/23/android事件机制相关/">android事件机制相关</a>
+      </li>
+    
+      <li>
+        <a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/25/android监听来电状况/">android监听来电状况</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget duoshuo_recent_comments">
+  <h3 class="title">最新评论</h3>
+  <ul class="entry ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-title="1" data-show-time="1"></ul>
+</div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+
+  
+<div class="widget links">
+  <h3 class="title">链接</h3>
+  <ul class="entry">
+    
+    <li><a href="http://fydx.cc" target="_BLANK">fydx&#39;s Blog</a></li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 fydx
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div style="display:none;">
+  <!-- 你的百度统计代码 -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0e8f59b5f6a4685006d013b89827075e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</div>
+
+</body>
+</html>

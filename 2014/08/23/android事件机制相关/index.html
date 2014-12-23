@@ -1,0 +1,345 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>android事件机制相关 | fydx&#39;s area</title>
+  <meta name="author" content="fydx">
+  
+  <meta name="description" content="java | android | fydx">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="android事件机制相关"/>
+  <meta property="og:site_name" content="fydx&#39;s area"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="fydx&#39;s area" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40790188-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">fydx&#39;s area</a></h1>
+  <h2><a href="/">码</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-08-23T13:51:45.000Z"><a href="/2014/08/23/android事件机制相关/">8月 23 2014</a></time>
+      
+      
+  
+    <h1 class="title">android事件机制相关</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>对于android的点击事件处理，一般会涉及到这三个方法</p>
+<ul>
+<li>onTouch （存在于OnTouchListener中）</li>
+<li>onTouchEvent （存在于View，ViewGroup，Activity中）</li>
+<li>onInterceptTouchEvent （存在于ViewGroup中）</li>
+</ul>
+<p>这三个方法的返回值都是Boolean<br><a id="more"></a></p>
+<h3 id="关于setOnClickListener的解读">关于setOnClickListener的解读</h3>
+<hr>
+<p>平常用的最多的设置按键监听的方法是setOnClickListener，这是View的一个方法，在View中，我们可以找到这样一段代码：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOnTouchListener</span>(OnTouchListener l) {  
+        mOnTouchListener = l;  
+}  
+</code></pre><p>而我们在View的onTouchEvent中，我们又会看到这样的一段代码：</p>
+<pre><code><span class="keyword">switch</span> (<span class="keyword">event</span>.getAction()) {  
+                <span class="keyword">case</span> MotionEvent.ACTION_UP:  
+                                   <span class="comment">//.....</span>
+                                                <span class="keyword">if</span> (!post(mPerformClick)) {  
+                                                                                    performClick();  
+                                                                                                                }  
+                                                                        }  
+                }  
+</code></pre><p>performClick内的代码如下：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">performClick</span>() {  
+        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);  
+            <span class="keyword">if</span> (mOnClickListener != <span class="keyword">null</span>) {  
+                        playSoundEffect(SoundEffectConstants.CLICK);  
+                                mOnClickListener.onClick(<span class="keyword">this</span>);  
+                                        <span class="keyword">return</span> <span class="keyword">true</span>;  
+                                            }  
+                <span class="keyword">return</span> <span class="keyword">false</span>;  
+                    }  
+</code></pre><p>所以，本质上，setOnClickListener里面的onClickListener是在onTouchEvent里被响应的</p>
+<h3 id="第一条路线：从下向上的事件分发机制">第一条路线：从下向上的事件分发机制</h3>
+<hr>
+<p>要想要onClickListener被响应，除了要set到View上面之外，还需要能让点击的事件可以被传进来，而不是被拦截掉。</p>
+<p>点击的事件，会先触发第一条从下而上（从父View到子View）的路线：事件分发路线</p>
+<p>一个点击事件会首先被传到onInterceptTouchEvent方法，这个方法是负责决定事件的传递方向的。onInterceptTouchEvent的返回值是boolean，如果return true，就意为着这个事件被自身消费掉，传导到自身的onTouchEvent而不传导到子控件。<br>在这个时候需要注意事件发生的顺序，在ACTION_MOVE之前一定会有ACTION_DOWN，如果在ACTION_DOWN的时候已经return，则对ACTION_MOVE里面写了事件处理，也不可能被触发</p>
+<p>那么，接下来有两种可能</p>
+<ol>
+<li><p>return true，事件被拦截，使用该View的onTouchEvent方法(没有被setOnTouchListener的情况)或者onTouchListener的onTouch方法(被setOnTouchListener的情况)</p>
+<ol>
+<li>return false，事件未被拦截，传导到下面的View中去</li>
+</ol>
+<p>子View的onInterceptTouchEvent也会有响应，决定事件是否向下传递</p>
+<p>继续下去，事件可能就被最终的某个View上</p>
+</li>
+</ol>
+<h3 id="第二条路线：从上向下的事件响应机制">第二条路线：从上向下的事件响应机制</h3>
+<hr>
+<pre><code>第二条路线的关键是onTouch和onTouchEvent这两个方法：
+
+对于onTouch，我们要想写这个方法，首先需要对View setOnTouchListener，并对onTouchListsner的onTouch方法进行重载
+而对于onTouchEvent，我们是直接对View里面的这个方法进行重载的
+相比较而言，可以这么说：onTouchEvent是在内改，而onTouch是在外对View一个属性的修改
+
+在调用上，这两个方法都是在View的dispatchTouchEvent中被调用的，但是onTouch会优先于onTouch执行。
+
+而onTouch和onTouchEvent也都是有返回值的，<span class="keyword">true</span>意味着事件不再向下传导，自己消费，<span class="keyword">false</span>意味着事件继续向下传导，父View还可以继续响应。
+
+这也就意味着，如果onTouch返回<span class="keyword">true</span>，那么onTouchEvent将不再被响应。
+我们来看一下View的dispatchTouchEvent方法，可以看的更明显。
+
+    <span class="keyword">public</span> boolean <span class="title">dispatchTouchEvent</span>(MotionEvent <span class="keyword">event</span>) {  
+                <span class="keyword">if</span> (mInputEventConsistencyVerifier != <span class="keyword">null</span>) {  
+                                mInputEventConsistencyVerifier.onTouchEvent(<span class="keyword">event</span>, <span class="number">0</span>);  
+                                        }  
+
+                        <span class="keyword">if</span> (onFilterTouchEventForSecurity(<span class="keyword">event</span>)) {  
+                                        <span class="comment">//noinspection SimplifiableIfStatement  </span>
+                                        ListenerInfo li = mListenerInfo;  
+                                                    <span class="keyword">if</span> (li != <span class="keyword">null</span> &amp;&amp; li.mOnTouchListener != <span class="keyword">null</span> &amp;&amp; (mViewFlags &amp; ENABLED_MASK) == ENABLED  
+                                                                                &amp;&amp; li.mOnTouchListener.onTouch(<span class="keyword">this</span>, <span class="keyword">event</span>)) {  
+                                                                        <span class="keyword">return</span> <span class="keyword">true</span>;  
+                                                                                    }  
+
+                                                                <span class="keyword">if</span> (onTouchEvent(<span class="keyword">event</span>)) {  
+                                                                                    <span class="keyword">return</span> <span class="keyword">true</span>;  
+                                                                                                }  
+                                                                        }  
+
+                                <span class="keyword">if</span> (mInputEventConsistencyVerifier != <span class="keyword">null</span>) {  
+                                                mInputEventConsistencyVerifier.onUnhandledEvent(<span class="keyword">event</span>, <span class="number">0</span>);  
+                                                        }  
+                                        <span class="keyword">return</span> <span class="keyword">false</span>;  
+                                            }  
+</code></pre><p>还有一点需要注意的是，要想响应onTouch，那么这个点击的控件必须是enable的，要是这个控件是非enable的，那我们只能重载onTouchEvent了。</p>
+<p>传递到某个子View的时候，此时会响应这个View的onTouch或onTouchEvent方法，根据他的返回值决定是否向下传递，那么接下来也是两种可能：</p>
+<ol>
+<li>onTouch/onTouchEvent return true ，本身这个View把这个事件消费了</li>
+<li>onTouch/onTouchEvent return false ，响应完后再向父View传递这个事件。</li>
+</ol>
+<p>解决事件冲突，核心就是处理onInterceptTouchEvent，onTouch，onTouchEvent这三个方法的返回值。</p>
+<h2 id="点击事件处理小技巧：Gesture">点击事件处理小技巧：Gesture</h2>
+<p>实际上在真机使用时，点击不仅会触发到ACTION_DOWN事件，由于手指可能会颤抖一下，还会触发到ACTION_MOVE，我们可以设定一个继承自GestureDetector.SimpleOnGestureListener的类，通过重载里面的onScroll，监听X，Y轴的坐标移动量，返回true/false。<br><code>mGestureDetector.onTouchEvent(event)</code>会返回和onScroll同样的返回值，通过这个方法结合onInterecptTouchEvent，可以使点击更顺畅。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Android/">Android</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="android事件机制相关" data-url="http://fydxtech.cc/2014/08/23/android事件机制相关/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!-- Duoshuo Comment END -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget about_me">
+  <h3 class="title">ABOUT ME</h3>
+  <ul class="entry">
+    
+    <li><img width="150" title="avatar" src="http://www.gravatar.com/avatar/d8708f776472330c6ced5f336cc1b3f8.png" /></li>
+    
+    
+    <li>微博：<a href="http://weibo.com/u/1651749981" target="_BLANK">@幻之神翼</a></li>
+    
+    <li>Github：<a href="https://github.com/fydx" target="_BLANK">fydx</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/算法/">算法</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/08/23/android事件机制相关/">android事件机制相关</a>
+      </li>
+    
+      <li>
+        <a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/25/android监听来电状况/">android监听来电状况</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget duoshuo_recent_comments">
+  <h3 class="title">最新评论</h3>
+  <ul class="entry ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-title="1" data-show-time="1"></ul>
+</div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+
+  
+<div class="widget links">
+  <h3 class="title">链接</h3>
+  <ul class="entry">
+    
+    <li><a href="http://fydx.cc" target="_BLANK">fydx&#39;s Blog</a></li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 fydx
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div style="display:none;">
+  <!-- 你的百度统计代码 -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0e8f59b5f6a4685006d013b89827075e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>JDBC 连接 MySQL | fydx&#39;s area</title>
+  <meta name="author" content="fydx">
+  
+  <meta name="description" content="java | android | fydx">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="JDBC 连接 MySQL"/>
+  <meta property="og:site_name" content="fydx&#39;s area"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="fydx&#39;s area" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40790188-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">fydx&#39;s area</a></h1>
+  <h2><a href="/">码</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-10T05:45:29.000Z"><a href="/2014/05/10/jdbc连接mysql/">5月 10 2014</a></time>
+      
+      
+  
+    <h1 class="title">JDBC 连接 MySQL</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>以前Java后端写的确实是少，来看看JDBC吧。</p>
+<p>JDBC = Java DataBase Connectivity </p>
+<p>我们要使用JDBC，首先需要配置一下mysql 或者其他的数据库环境，配置在这里就略过了，以下均以mysql为我使用的数据库环境</p>
+<p>测试用数据库名：testjdbc<br>username： root<br>password： 空</p>
+<p>OK，首先我们需要下载一个jar文件，作为我们项目的依赖</p>
+<p>下载地址<a href="http://dev.mysql.com/downloads/connector/j/" target="_blank" rel="external">http://dev.mysql.com/downloads/connector/j/</a></p>
+<p>我们解开下载的压缩包，会看到一个jar文件，加入到我们项目的依赖中，基本配置完成。</p>
+<h4 id="JDBC基本使用">JDBC基本使用</h4>
+<p>1, 加载驱动</p>
+<pre><code><span class="keyword">Class</span>.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);<span class="comment">// 加载Mysql数据驱动</span>
+</code></pre><p>首先，我们需要加载mysql的驱动<br>这里的Class.forName 将class进行解释和初始化，需要在DriveManager里面注册，以初始化驱动</p>
+<p>2，创建数据库连接</p>
+<pre><code><span class="constant"> Connection connection;
+ connection</span> = DriverManager.getConnection(
+                <span class="string">"jdbc:mysql://localhost:3306/testjdbc"</span>, <span class="string">"root"</span>, <span class="string">""</span>);<span class="comment">// 创建数据连接，参数为：连接的ip和端口+数据库的名字，mysql用户名，mysql用户名的密码</span>
+</code></pre><p>这里我们需要连接到这个数据库，getconnection的三个参数，一个是uri，使用mysql的话，就是“jdbc:mysql//“ + ip +”:” +  端口  + “/” + 数据库名，第二个参数是用户名，第三个参数是对应用户名的密码</p>
+<p>3, 创建Statement对象      </p>
+<pre><code>  Statement statement ;
+    <span class="keyword">try</span> {
+       statement = connection.createStatement();
+                } <span class="keyword">catch</span> (SQLException e) {
+
+        e.printStackTrace();
+
+    }  
+</code></pre><p> Statement对象是我们的操纵杆，我们操作数据库需要通过Statement对象来完成</p>
+<p>4，执行SQL语句</p>
+<p>我们创建了Statement的对象之后就可以执行SQL语句了，执行查询的方式就是<code>statement.executeQuery(String sql)</code> 这种形式，比如：</p>
+<pre><code> try {
+       statement <span class="subst">=</span> connection<span class="built_in">.</span>createStatement();
+        <span class="keyword">ResultSet</span> <span class="keyword">resultSet</span> <span class="subst">=</span>statement<span class="built_in">.</span>executeQuery(<span class="string">"select * from test"</span>);
+        <span class="keyword">while</span> (<span class="keyword">resultSet</span><span class="built_in">.</span>next())
+        {
+            <span class="built_in">String</span> name <span class="subst">=</span> <span class="keyword">resultSet</span><span class="built_in">.</span>getString(<span class="string">"name"</span>);
+            int id <span class="subst">=</span> <span class="keyword">resultSet</span><span class="built_in">.</span>getInt(<span class="string">"id"</span>);
+            System<span class="built_in">.</span>out<span class="built_in">.</span>print(name <span class="subst">+</span> <span class="string">"  "</span> <span class="subst">+</span> id <span class="subst">+</span><span class="string">"\n"</span>) ;
+        }
+    } catch (SQLException e) {
+
+        e<span class="built_in">.</span>printStackTrace();
+
+    }
+</code></pre><p> 这里需要注意的一点是，如果执行的sql语句有返回值，那么返回的是一个ResultSet对象，使用方式和迭代器类似。</p>
+<p> 插入，删除操作使用的是<code>statement.executeUpdate(String sql)</code></p>
+<p> 类似这样  </p>
+<pre><code>   try {
+       statement = connection.createStatement();
+       System.out.print("<span class="operator"><span class="keyword">INSERT</span> RESULT :<span class="string">" + statement.executeUpdate("</span><span class="keyword">insert</span> <span class="keyword">into</span> test(name,id) <span class="keyword">values</span> (<span class="string">'123'</span> , <span class="number">7</span>)<span class="string">")+  "</span>\n<span class="string">");
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+    }</span></span>
+</code></pre><p>5， 当不使用数据库时，使用Connection.close关闭数据库连接</p>
+<p>三个主要语句的总结：</p>
+<p>statement.execute(String sql)</p>
+<p>执行sql语句，如果是查询语句（返回ResultSet），那么返回值是true，否则返回值是false</p>
+<p>statement.executeUpdate（String sql）</p>
+<p>执行sql语句，增、删、改使用，返回的是影响的行数</p>
+<p>statement.executeQuery(String sql)</p>
+<p>执行sql语句，执行查询操作，返回的是ResultSet</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Java/">Java</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="JDBC 连接 MySQL" data-url="http://fydxtech.cc/2014/05/10/jdbc连接mysql/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!-- Duoshuo Comment END -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget about_me">
+  <h3 class="title">ABOUT ME</h3>
+  <ul class="entry">
+    
+    <li><img width="150" title="avatar" src="http://www.gravatar.com/avatar/d8708f776472330c6ced5f336cc1b3f8.png" /></li>
+    
+    
+    <li>微博：<a href="http://weibo.com/u/1651749981" target="_BLANK">@幻之神翼</a></li>
+    
+    <li>Github：<a href="https://github.com/fydx" target="_BLANK">fydx</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/算法/">算法</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/08/23/android事件机制相关/">android事件机制相关</a>
+      </li>
+    
+      <li>
+        <a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/25/android监听来电状况/">android监听来电状况</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget duoshuo_recent_comments">
+  <h3 class="title">最新评论</h3>
+  <ul class="entry ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-title="1" data-show-time="1"></ul>
+</div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+
+  
+<div class="widget links">
+  <h3 class="title">链接</h3>
+  <ul class="entry">
+    
+    <li><a href="http://fydx.cc" target="_BLANK">fydx&#39;s Blog</a></li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 fydx
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div style="display:none;">
+  <!-- 你的百度统计代码 -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0e8f59b5f6a4685006d013b89827075e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</div>
+
+</body>
+</html>

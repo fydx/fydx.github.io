@@ -1,0 +1,328 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>java接口相关 | fydx&#39;s area</title>
+  <meta name="author" content="fydx">
+  
+  <meta name="description" content="java | android | fydx">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="java接口相关"/>
+  <meta property="og:site_name" content="fydx&#39;s area"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="fydx&#39;s area" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40790188-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">fydx&#39;s area</a></h1>
+  <h2><a href="/">码</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-12T04:55:49.000Z"><a href="/2014/05/12/java接口相关/">5月 12 2014</a></time>
+      
+      
+  
+    <h1 class="title">java接口相关</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>接口是Java里面很常用的一个特性，接口的作用是用来定义一个规范，让其他的类实现这个接口，让我们明确，这个类实现了这个接口，可以做这个事情。</p>
+<p>举个例子，我们中午在街上，肚子饿了，附近有很多写着“餐厅”招牌的地方。那么这些地方实际上就是实现了“有吃的东西卖”这个接口，告诉我们这个地方有饭吃。至于里面的饭是什么，好不好吃，那么就是看各家的实现了。</p>
+<p>我们来按这个例子写一个代码</p>
+<p>我们定义了一个接口SellFood，创建两个类DumplingRestaurant和NoodleResuaurant去实现这个接口，创建一个Person可以去买食物</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">interfaceTest</span> </span>{
+
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SellFood</span>
+</span>{
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sell</span>();
+
+}
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DumplingRestaurant</span> <span class="keyword">implements</span> <span class="title">SellFood</span>
+</span>{
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sell</span>()
+    {
+        System.out.print(<span class="string">"Sell Dumplings Here"</span> + <span class="string">"\n"</span>);
+    }
+
+}
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NoodleRestaurant</span> <span class="keyword">implements</span> <span class="title">SellFood</span>
+</span>{
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sell</span>()
+    {
+        System.out.print(<span class="string">"Sell Noodle Here"</span> + <span class="string">"\n"</span>);
+    }
+}
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span>
+</span>{
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buy</span>(SellFood sellFood)
+    {
+        sellFood.sell();
+    }
+}
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args)
+{
+    interfaceTest interfaceTest =  <span class="keyword">new</span> interfaceTest();
+    DumplingRestaurant dumplingRestaurant = interfaceTest.<span class="keyword">new</span> DumplingRestaurant();
+    NoodleRestaurant noodleRestaurant = interfaceTest.<span class="keyword">new</span> NoodleRestaurant();
+    Person person = interfaceTest.<span class="keyword">new</span> Person();
+    person.buy(dumplingRestaurant);
+    person.buy(noodleRestaurant);
+}
+
+}
+</code></pre><p>从这个代码我们可以看出来，Person是去“可以买的东西地方”买东西，没必要去关心这里到底是卖什么东西，只要这个地方实现了SellFood的接口就可以被传入到buy这个方法里面</p>
+<p>接口最典型的应用就是Comparable和Comparator了</p>
+<h4 id="对于Comparable来说：">对于Comparable来说：</h4>
+<p>实现Comparable，就需要类里面实现compareTo方法，明确这个类是可以被排序的，当这个类被加载到某个集合（比如数组或者List中）的时候，可以使用Collections.sort()和Arrays.sort()排序</p>
+<p>compareTo方法可以这样子调用</p>
+<pre><code>    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span>(Person person) {
+        <span class="keyword">return</span> <span class="keyword">this</span>.age - person.age;
+    }
+</code></pre><p> 返回 &gt;0  =0 &lt;0 的数以说明该对象相对于另外一个对象大于，等于，或者小于</p>
+<h4 id="对于Comparator来说：">对于Comparator来说：</h4>
+<p>Comparable是在类内部来实现的，而Comparator是在集合的外部实现的，Comparator不需要在类的内部去定义，在类的外部创建即可</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">AgeComparator</span> <span class="keyword">implements</span> <span class="title">Comparator</span>&lt;<span class="title">Person</span>&gt; </span>{
+
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span>(Person p1, Person p2) {
+    <span class="keyword">return</span> p1.getAge() - p2.getAge();
+}
+}
+</code></pre><p>使用Comparator的时候需要这样写：</p>
+<pre><code> ArrayList&lt;Person&gt; persons = <span class="keyword">new</span> ArrayList&lt;Person&gt;();
+ person.<span class="built_in">add</span>(<span class="string">"12"</span>);
+ // 增加几个元素之后
+ Collections.<span class="built_in">sort</span>(persons, comparator);
+</code></pre><p>PS. 写Restaurant这个程序的时候有个小插曲，如果我们直接写<code>DumplingRestaurant dumplingRestaurant = new DumplingRestaurant();</code> 会报错</p>
+<blockquote>
+<p>No enclosing instance of type interfaceTest is accessible. Must qualify the allocation with an enclosing instance of type interfaceTest (e.g. x.new A() where x is an instance of interfaceTest).</p>
+</blockquote>
+<p>这个意思是，必须先进行外部类的实例化，才能通过外部类来引用内部类。因为两个Restautant和Person都是内部类，所以我们必须先进行外部类的实例化，用这种方式来创建对象才行：</p>
+<pre><code>interfaceTest interfaceTest =  <span class="keyword">new</span> interfaceTest();
+    DumplingRestaurant dumplingRestaurant = interfaceTest.<span class="keyword">new</span> DumplingRestaurant();
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Java/">Java</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="java接口相关" data-url="http://fydxtech.cc/2014/05/12/java接口相关/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!-- Duoshuo Comment END -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget about_me">
+  <h3 class="title">ABOUT ME</h3>
+  <ul class="entry">
+    
+    <li><img width="150" title="avatar" src="http://www.gravatar.com/avatar/d8708f776472330c6ced5f336cc1b3f8.png" /></li>
+    
+    
+    <li>微博：<a href="http://weibo.com/u/1651749981" target="_BLANK">@幻之神翼</a></li>
+    
+    <li>Github：<a href="https://github.com/fydx" target="_BLANK">fydx</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/算法/">算法</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/08/23/android事件机制相关/">android事件机制相关</a>
+      </li>
+    
+      <li>
+        <a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/25/android监听来电状况/">android监听来电状况</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget duoshuo_recent_comments">
+  <h3 class="title">最新评论</h3>
+  <ul class="entry ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-title="1" data-show-time="1"></ul>
+</div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+
+  
+<div class="widget links">
+  <h3 class="title">链接</h3>
+  <ul class="entry">
+    
+    <li><a href="http://fydx.cc" target="_BLANK">fydx&#39;s Blog</a></li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 fydx
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div style="display:none;">
+  <!-- 你的百度统计代码 -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0e8f59b5f6a4685006d013b89827075e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</div>
+
+</body>
+</html>

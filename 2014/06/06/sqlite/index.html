@@ -1,0 +1,445 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android sqlite 操作（单例sqlite helper） | fydx&#39;s area</title>
+  <meta name="author" content="fydx">
+  
+  <meta name="description" content="java | android | fydx">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Android sqlite 操作（单例sqlite helper）"/>
+  <meta property="og:site_name" content="fydx&#39;s area"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="fydx&#39;s area" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40790188-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">fydx&#39;s area</a></h1>
+  <h2><a href="/">码</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-06-06T07:47:28.000Z"><a href="/2014/06/06/sqlite/">6月 6 2014</a></time>
+      
+      
+  
+    <h1 class="title">Android sqlite 操作（单例sqlite helper）</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Android的数据库使用的是sqlite，sqlite仅由一个单文件组成，非常非常简单，备份起来，也就是一个.db文件的事儿。</p>
+<p>我们希望的一个方式是，使用单例去控制数据库，增删改查均可在一个单例中去实现。</p>
+<p>Android为我们提供了一个框架，叫SQLiteOpenHepler，我们可以继承这个抽象类，实现我们想要的功能。</p>
+<h2 id="获取数据库实例">获取数据库实例</h2>
+<p>想要实现单例的数据库访问和增删改查，核心就是获取数据库实例，也就是SQliteDatabase，获取了数据库就可以执行各种sql语句，那么数据库就可以任意操作了，下面代码mDB就是我们获取到的数据库，增删改查这些操作，使用mDB.exec(sql)即可。</p>
+<p>getWritableDatabase以读写方式获取的数据库，一旦数据库的空间满了，数据库就无法打开，抛出异常<br>getReadableDatabase也是以读写方式打开数据库，但是一旦数据库空间满了，会再尝试以只读的方式打开数据库</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DBHelper</span> <span class="keyword">extends</span> <span class="title">SQLiteOpenHelper</span> </span>{
+<span class="comment">/* 静态实例 */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> DBHelper mInstance = <span class="keyword">null</span>;
+<span class="comment">/* 数据库名字 */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DB_NAME = <span class="string">"notes.db"</span>;
+<span class="comment">/* 数据库版本，为onUpgrade准备 ，这个数字必须大于等于1 */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DB_VERSION = <span class="number">1</span> ;
+<span class="comment">/* 数据库实例 */</span>
+<span class="keyword">private</span> SQLiteDatabase mDB = <span class="keyword">null</span>;
+<span class="comment">/* context 上下文 */</span>
+<span class="keyword">private</span> <span class="keyword">static</span> Context mContext = <span class="keyword">null</span>;
+
+<span class="keyword">public</span> <span class="keyword">static</span> String CREATE_TABLE_NOTES = <span class="string">"CREATE TABLE IF NOT EXISTS notes (_id INTEGER PRIMARY KEY AUTOINCREMENT,  content TEXT,)"</span>;
+
+<span class="javadoc">/**
+ * 静态构造方法
+ *<span class="javadoctag"> @throws</span> SQLiteException
+ */</span>
+<span class="keyword">private</span> <span class="title">DBHelper</span>() <span class="keyword">throws</span> SQLiteException
+{
+    <span class="comment">/* 参数：1，上下文Context，2，数据库名字，3，CursorFactoty，可以自定义Cursor的创建
+            传入null就是以默认状态，4，数据库版本 */</span>
+    <span class="keyword">super</span>(mContext,DB_NAME,<span class="keyword">null</span>,DB_VERSION);
+    getDB();
+
+}
+
+<span class="javadoc">/**
+ * 获取Database实例
+ */</span>
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getDB</span>()
+{
+    <span class="keyword">try</span>
+    {
+        mDB = getWritableDatabase();
+    }
+    <span class="keyword">catch</span> (Exception e)
+    {
+        Log.e(<span class="string">"Database"</span>,<span class="string">"GET DB ERROR!! "</span> + e.toString());
+        mDB = getReadableDatabase();
+    }
+    Log.i(<span class="string">"Dabatase"</span>,<span class="string">"GET DB SUCCESS!!"</span>);
+}    <span class="javadoc">/**
+ 以单例的方式获取对象
+ */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span>  DBHelper <span class="title">getInstance</span>(Context context)
+{
+    mContext = context;
+    <span class="keyword">if</span> (mInstance == <span class="keyword">null</span>)
+    {
+        mInstance = <span class="keyword">new</span> DBHelper();
+
+    }
+    <span class="keyword">return</span> mInstance;
+
+}
+
+<span class="javadoc">/**
+ * 数据库被首次创建时执行的方法
+ *<span class="javadoctag"> @param</span> sqLiteDatabase
+ */</span>
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span>(SQLiteDatabase sqLiteDatabase) {
+
+    sqLiteDatabase.execSQL(CREATE_TABLE_NOTES);
+}
+
+<span class="javadoc">/**
+ * 数据库传入的版本号与当前数据库版本号不同时执行的方法
+ *<span class="javadoctag"> @param</span> sqLiteDatabase
+ *<span class="javadoctag"> @param</span> i
+ *<span class="javadoctag"> @param</span> i2
+ */</span>
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onUpgrade</span>(SQLiteDatabase sqLiteDatabase, <span class="keyword">int</span> i, <span class="keyword">int</span> i2) {
+    String sql = <span class="string">"DROP TABLE  IF EXISTS notes"</span> ; 
+    sqLiteDatabase.execSQL(sql);
+    sqLiteDatabase.execSQL(CREATE_TABLE_NOTES);
+}
+}
+</code></pre><h2 id="稍微深入一点">稍微深入一点</h2>
+<p>我们会看到一些标准的打开数据库的方式：<br><code>public static SQLiteDatabase openOrCreateDatabase (File file, SQLiteDatabase.CursorFactory factory)</code></p>
+<p>其实SQLiteOpenHelper也就是把这些方法进行了一些封装，方便进行调用</p>
+<pre><code><span class="keyword">public</span> SQLiteOpenHelper(Context context, String name, CursorFactory factory, <span class="keyword">int</span> <span class="keyword">version</span>) {
+     <span class="keyword">this</span>(context, name, factory, <span class="keyword">version</span>, <span class="literal">null</span>);
+ }
+
+ <span class="keyword">public</span> SQLiteOpenHelper(Context context, String name, CursorFactory factory, <span class="keyword">int</span> <span class="keyword">version</span>,
+        DatabaseErrorHandler errorHandler) {
+    <span class="keyword">if</span> (<span class="keyword">version</span> &lt; <span class="number">1</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Version must be &gt;= 1, was "</span> + <span class="keyword">version</span>);
+
+    mContext = context;
+    mName = name;
+    mFactory = factory;
+   mNewVersion = <span class="keyword">version</span>;
+   mErrorHandler = errorHandler;
+ }
+</code></pre><p> 在调用getWritableDatabase或者getReadableDatabase时会调用 getDatabaseLocked，而其中有这么一段：</p>
+<pre><code>  <span class="keyword">if</span> (DEBUG_STRICT_READONLY &amp;&amp; !writable) {
+                   final String <span class="variable">path =</span> mContext.getDatabasePath(mName).getPath();
+                    <span class="variable">db =</span> SQLiteDatabase.openDatabase(path, mFactory,
+                        SQLiteDatabase.OPEN_READONLY, mErrorHandler);
+                } <span class="keyword">else</span> {
+                   <span class="variable">db =</span> mContext.openOrCreateDatabase(mName, mEnableWriteAheadLogging ?
+                            Context.MODE_ENABLE_WRITE_AHEAD_LOGGING : <span class="number">0</span>,
+                           mFactory, mErrorHandler);
+           }
+</code></pre><h2 id="增删改查动作的一些执行方法">增删改查动作的一些执行方法</h2>
+<p>我们操作的是数据库，那么必然可以使用sql语句执行增删改查的动作，但是写sql这种事情需要拼接字符串，毕竟不方便。对于在Android中的sqlite，我们还会有一些另外的方法</p>
+<h3 id="增：">增：</h3>
+<p>使用ContentValues，作为一个键值对。</p>
+<p><code>values.put(&quot;column&quot;,&quot;value&quot;)</code> 第一个参数是列名，第二个参数是值，根据列的数值类型而定，可以传入基本数据类型或String</p>
+<p>put结束之后，调用db.insert即可，</p>
+<p>insert的参数是这样子的 <code>public long insert (String table, String nullColumnHack, ContentValues values)</code></p>
+<p>第一个参数是表名<br>第二个参数是为了避免values是null，如果sql语句的values有值但是前面的列名是null的时候，会给一个默认的列，避免sql语句不合法。ContentValues的put方法，第一个参数是允许为空的，一旦第一个参数是空的，那么就会给它分配到nullColumnHack这个列上面去<br>第三个参数就是ContentValues</p>
+<p>返回值是新插入数据的Row ID</p>
+<pre><code> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertNotes</span>(LocalNote localNote)
+  {
+
+    ContentValues values = <span class="keyword">new</span> ContentValues();
+    values.put(<span class="string">"content"</span>,localNote.getContent());
+    mDB.insert(<span class="string">"notes"</span>,<span class="keyword">null</span>,values);
+    Log.i(<span class="string">"Database"</span>,<span class="string">"INSERT SUCCESS : "</span> + values.toString());
+}
+</code></pre><h3 id="改:">改:</h3>
+<p>和增一样，不过改的时候多了一个where</p>
+<p><code>public int update (String table, ContentValues values, String whereClause, String[] whereArgs)</code></p>
+<p>第一个第二个参数和在增里面的是一样的<br>第三个参数，选择进行哪些数据的更新，其实也就是sql语句里面where之后的东西。这里要是传入的是null会进行所有数据的更新<br>第四个参数，替换第三个参数里面的 “?”</p>
+<p>返回值是影响的列数</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateNotes</span> (LocalNote localNote,<span class="keyword">int</span> id)
+{
+    ContentValues values = <span class="keyword">new</span> ContentValues();
+     values.put(<span class="string">"content"</span>,localNote.getContent());
+     mDB.update(<span class="string">"notes"</span>,values,<span class="string">"_id = "</span>  + String.valueOf(id) ,<span class="keyword">null</span>);
+}
+</code></pre><h3 id="删:">删:</h3>
+<p>删就好说了，关键是where语句</p>
+<p><code>public int delete (String table, String whereClause, String[] whereArgs)</code></p>
+<p>第一个参数，表名<br>第二个参数，where语句之后的东西<br>第三个参数，替换第二个参数里面的 ?</p>
+<p>返回值是影响的列数</p>
+<pre><code>  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteNotes</span> (<span class="keyword">int</span> id)
+{
+    mDB.delete(<span class="string">"notes"</span>,<span class="string">"_id = "</span> +  String.valueOf(id),<span class="keyword">null</span>);
+}
+</code></pre><h3 id="查:">查:</h3>
+<p>不得不说这个API的设计…略蛋疼</p>
+<p><code>public Cursor query (boolean distinct, String table, String[] columns, 
+            String selection, String[] selectionArgs, 
+            String groupBy, String having, 
+            String orderBy, String limit, 
+            CancellationSignal cancellationSignal)</code></p>
+<p>10个参数的方法…</p>
+<ol>
+<li><p>是否去除重复数据，是的话传true，不是的话传false</p>
+</li>
+<li><p>表名</p>
+</li>
+<li><p>查询的列名</p>
+</li>
+<li><p>where后面的部分</p>
+</li>
+<li><p>替代第四个参数的“？”</p>
+</li>
+<li><p>groupBy后面的部分，用于分组</p>
+</li>
+<li><p>having后面的部分，用户过滤</p>
+</li>
+<li><p>orderBy后面的部分，用户排序</p>
+</li>
+<li><p>limit后面的部分，用于分页查询</p>
+</li>
+<li><p>进程中取消操作的信号</p>
+</li>
+</ol>
+<p>返回值是一个Cursor</p>
+<pre><code><span class="keyword">public</span> Cursor <span class="title">getCursorFromFirst</span>()
+{
+   <span class="keyword">return</span>  mDB.query(<span class="keyword">true</span>,<span class="string">"notes"</span>,<span class="keyword">null</span>,<span class="keyword">null</span>,<span class="keyword">null</span>,<span class="keyword">null</span>,<span class="keyword">null</span>,<span class="keyword">null</span>,<span class="keyword">null</span>);
+}
+</code></pre><h2 id="关于数据库的一些ORM框架">关于数据库的一些ORM框架</h2>
+<p>使用数据库的时候，如果要求不是很高，我们完全可以采用一些框架来解决数据库的存储问题，何必自己写这么多？使用ORM框架可能就是一句话可以解决的问题</p>
+<p>关于数据库在android的ORM框架，我个人非常喜欢afinal里面的FinalDB模块，完全不需要任何sql语句即可建立数据库。</p>
+<p>详情可以看这里 <a href="https://github.com/yangfuhai/afinal" target="_blank" rel="external">https://github.com/yangfuhai/afinal</a></p>
+<p>FinalDB可以让操作数据库的事儿一句话就解决了，极其方便：</p>
+<pre><code>FinalDb db = FinalDb.create(this)<span class="comment">;</span>
+User <span class="literal">user</span> = new User()<span class="comment">; //这里需要注意的是User对象必须有id属性，或者有通过@ID注解的属性</span>
+<span class="literal">user</span>.setEmail(<span class="string">"mail@tsz.net"</span>)<span class="comment">;</span>
+<span class="literal">user</span>.setName(<span class="string">"michael yang"</span>)<span class="comment">;</span>
+db.save(<span class="literal">user</span>)<span class="comment">;</span>
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Android/">Android</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="Android sqlite 操作（单例sqlite helper）" data-url="http://fydxtech.cc/2014/06/06/sqlite/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!-- Duoshuo Comment END -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget about_me">
+  <h3 class="title">ABOUT ME</h3>
+  <ul class="entry">
+    
+    <li><img width="150" title="avatar" src="http://www.gravatar.com/avatar/d8708f776472330c6ced5f336cc1b3f8.png" /></li>
+    
+    
+    <li>微博：<a href="http://weibo.com/u/1651749981" target="_BLANK">@幻之神翼</a></li>
+    
+    <li>Github：<a href="https://github.com/fydx" target="_BLANK">fydx</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/算法/">算法</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/08/23/android事件机制相关/">android事件机制相关</a>
+      </li>
+    
+      <li>
+        <a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/25/android监听来电状况/">android监听来电状况</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget duoshuo_recent_comments">
+  <h3 class="title">最新评论</h3>
+  <ul class="entry ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-title="1" data-show-time="1"></ul>
+</div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+
+  
+<div class="widget links">
+  <h3 class="title">链接</h3>
+  <ul class="entry">
+    
+    <li><a href="http://fydx.cc" target="_BLANK">fydx&#39;s Blog</a></li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 fydx
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div style="display:none;">
+  <!-- 你的百度统计代码 -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0e8f59b5f6a4685006d013b89827075e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</div>
+
+</body>
+</html>

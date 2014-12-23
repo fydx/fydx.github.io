@@ -1,0 +1,354 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用 | fydx&#39;s area</title>
+  <meta name="author" content="fydx">
+  
+  <meta name="description" content="java | android | fydx">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用"/>
+  <meta property="og:site_name" content="fydx&#39;s area"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="fydx&#39;s area" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40790188-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">fydx&#39;s area</a></h1>
+  <h2><a href="/">码</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-05-29T16:58:18.000Z"><a href="/2014/05/30/evernote2/">5月 30 2014</a></time>
+      
+      
+  
+    <h1 class="title">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>我们导入官方的Demo后，大概可以看到目录是这个样子的：</p>
+<p><img src="http://ww2.sinaimg.cn/small/6273b45dgw1egvn1yf8hqj20g40e0gmt.jpg" alt="目录"></p>
+<p>这里面，library是依赖部分，核心的业务处理，如果我们没有额外的要求，这部分就尽管引用好了，不要管他。</p>
+<p>Demo运行HelloEDAM之后就会出现默认启动Activity</p>
+<p><img src="http://ww3.sinaimg.cn/small/6273b45dgw1egvnf0anhjj20nq132jtb.jpg" alt="HelloEDAM"></p>
+<p>如果是自己建立依赖印象笔记SDK的工程，我们就把library设定为一个依赖的Module即可。</p>
+<!-- read more -->
+
+<h2 id="初始设定,建立Session">初始设定,建立Session</h2>
+<p>HelloEDAM这个Activity是集成自ParentActivity的，所以在HelloEDAM中，有些变量需要到ParentActvity中找一下</p>
+<p>在ParentaActivity开头，我们可以找到这么一段代码，这里我们需要输入我们自己的API key和secret才能正常使用。</p>
+<pre><code><span class="comment">// Your Evernote API key. See http://dev.evernote.com/documentation/cloud/</span>
+<span class="comment">// Please obfuscate your code to help keep these values secret.</span>
+<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONSUMER_KEY = <span class="string">"****"</span>;
+<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONSUMER_SECRET = <span class="string">"****"</span>;
+</code></pre><p>我们需要声明一个EvernoteSession变量，并取得它的实例，我们会使用这个对象建立和印象笔记的连接</p>
+<pre><code> <span class="title">EvernoteSession</span> mEvernoteSession;
+ <span class="title">mEvernoteSession</span> = EvernoteSession.getInstance(this, CONSUMER_KEY, CONSUMER_SECRET, EVERNOTE_SERVICE, SUPPORT_APP_LINKED_NOTEBOOKS);
+</code></pre><p>EVERNOTE_SERVICE是一个 EvernoteSession.EvernoteService 类型，指Evernote的服务，我们现在暂时只能使用沙箱服务，所以，只能这样子定义 </p>
+<pre><code><span class="attribute"> EvernoteSession.EvernoteService EVERNOTE_SERVICE </span>=<span class="string"> EvernoteSession.EvernoteService.SANDBOX;</span>
+</code></pre><p>SUPPORT_APP_NOTEBOOKS是一个boolean对象，true代表只能连接一个笔记本，而false代表可以连接多个</p>
+<p>注意，Demo的这些变量都是定义在ParentActivity里面的</p>
+<p>还有，注意在manifest里面需要添加一个Activity，为后面登入的Activity做注册（这个Activity存在于依赖包里面，这里不注册后面没办法登录了）</p>
+<pre><code>  &lt;activity android:<span class="variable">name=</span><span class="string">"com.evernote.client.android.EvernoteOAuthActivity"</span> android:<span class="variable">configChanges=</span><span class="string">"orientation|keyboardHidden"</span> /&gt;
+</code></pre><p>当然，还不要忘记添加连网权限</p>
+<pre><code><span class="tag">&lt;<span class="title">uses-permission</span> <span class="attribute">android:name</span>=<span class="value">"android.permission.INTERNET"</span> &gt;</span><span class="tag">&lt;/<span class="title">uses-permission</span>&gt;</span>
+</code></pre><h2 id="Log_in/out_登入登出模块，Oauth验证">Log in/out 登入登出模块，Oauth验证</h2>
+<p>我以为印象笔记是类似微博的那种SSO的方式…结果不是那样子的，他是打开一个网页进行Oauth授权<br>SSO和Oauth这两种方式，各有千秋吧。</p>
+<p>取得EvernoteSession的实例之后，ß我们就可以用我们之前在沙盒里面注册的帐号了</p>
+<pre><code>mEvernoteSession.authenticate(<span class="keyword">this</span>);
+</code></pre><p>这一句话就可以进行Evernote的Oauth认证</p>
+<p>登出同样是一句话</p>
+<pre><code>mEvernoteSession.logOut(<span class="keyword">this</span>);
+</code></pre><p>如果要验证的话，那么可以使用下一句话验证是否登录进去</p>
+<pre><code>mEvernoteSession.isLoggedIn()
+</code></pre><h2 id="UserStore_获取用户信息">UserStore 获取用户信息</h2>
+<p>我们在经过Oauth认证之后可以使用UserStore方式获取用户信息</p>
+<p>这里官网上也没有做更详细的解释，基本都是摸索着来，而且虽然官网说是用UserStore，更详细的应该说是使用AsyncUserStoreClient，请看以下代码</p>
+<pre><code> <span class="comment">/* 如果已经登录成功了 */</span>
+    <span class="keyword">if</span> (mEvernoteSession.isLoggedIn())
+    {
+        AsyncUserStoreClient mUserStoreClient = <span class="keyword">null</span>;
+        <span class="keyword">try</span> {
+            <span class="comment">/* 获取AsyncUserStoreClient对象 */</span>
+            mUserStoreClient = mEvernoteSession.getClientFactory().createUserStoreClient();
+            <span class="comment">/* 异步获取用户信息 */</span>
+            mUserStoreClient.getUser(<span class="keyword">new</span> OnClientCallback&lt;User&gt;() {
+                <span class="annotation">@Override</span>
+                <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSuccess</span>(User data) {
+                    Log.i(TAG,data.toString());
+                    Toast.makeText(MainActivity.<span class="keyword">this</span>,data.getUsername() + <span class="string">" 已绑定成功"</span>,Toast.LENGTH_LONG).show();
+                }
+
+                <span class="annotation">@Override</span>
+                <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onException</span>(Exception exception) {
+
+                }
+            });
+        } <span class="keyword">catch</span> (TTransportException e) {
+            e.printStackTrace();
+        }
+
+    }
+</code></pre><p>  data打印出来会是这个样子</p>
+<pre><code>  <span class="tag">User</span>(<span class="tag">id</span><span class="pseudo">:xxxxx</span>, <span class="tag">username</span><span class="pseudo">:xxxx</span>, <span class="tag">privilege</span><span class="pseudo">:NORMAL</span>, <span class="tag">active</span><span class="pseudo">:true</span>, <span class="tag">shardId</span><span class="pseudo">:s1</span>, <span class="tag">accounting</span><span class="pseudo">:Accounting(uploadLimit</span><span class="pseudo">:62914560</span>, <span class="tag">uploadLimitEnd</span><span class="pseudo">:1403766000000</span>, <span class="tag">uploadLimitNextMonth</span><span class="pseudo">:62914560</span>, <span class="tag">premiumServiceStatus</span><span class="pseudo">:NONE))</span>
+</code></pre><p>  选择我们感兴趣的地方get即可</p>
+<h2 id="NoteStore_写入笔记信息">NoteStore 写入笔记信息</h2>
+<p>写入笔记信息关键是使用Note这个类作为内容提供，同时我们需要了解一些ENML（印象笔记的格式）的东西，使用AsyncNoteStoreClient进行写入</p>
+<p>  Note可以setTitle和setContent，我们可以非常方便的进行数据的写入。</p>
+<p>  使用ENML格式，需要加一些文件头，Evernote在它的Util里面有提供。</p>
+<p>  AsyncNoteStoreClient的使用方式和AsyncUserStoreClient的使用方法很像。</p>
+<pre><code>  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeNote</span>(View v)
+{
+     EditText titleEditText = (EditText)findViewById(R.id.editText_title);
+     EditText contentEditText = (EditText)findViewById(R.id.editText_content);
+
+    <span class="keyword">try</span> {
+        createNote(titleEditText.getText().toString(),contentEditText.getText().toString());
+    } <span class="keyword">catch</span> (TTransportException e) {
+        e.printStackTrace();
+    }
+}
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createNote</span>(String title, String content) <span class="keyword">throws</span> TTransportException {
+    <span class="keyword">if</span> (mEvernoteSession.isLoggedIn()) {
+        Note note = <span class="keyword">new</span> Note();
+        note.setTitle(title);
+        note.setContent(EvernoteUtil.NOTE_PREFIX + content + EvernoteUtil.NOTE_SUFFIX);
+        mEvernoteSession.getClientFactory().createNoteStoreClient().createNote(note, <span class="keyword">new</span> OnClientCallback&lt;Note&gt;() {
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSuccess</span>(<span class="keyword">final</span> Note data) {
+                Toast.makeText(getApplicationContext(), data.getTitle() + <span class="string">" has been created"</span>, Toast.LENGTH_LONG).show();
+            }
+
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onException</span>(Exception exception) {
+                Log.e(TAG, <span class="string">"Error creating note"</span>, exception);
+            }
+        });
+    }
+}
+</code></pre><h2 id="总结">总结</h2>
+<p>读取用户信息，写入简单笔记，对于Evernote的SDK来说，非常简单，在经历了沙箱机制不爽之后，使用Evernote 的android SDK真是赏心悦目，另外他的异步方法封装的很好，使用的时候都不需要考虑异步调用的问题</p>
+<p>另外，关于SDK的使用方法，印象笔记的dev站点还不如Github主页Readme的清楚…所以，还是看Github吧。</p>
+<p>下次，我们更加深入的去了解Note，上传更多的元素。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Android/">Android</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用" data-url="http://fydxtech.cc/2014/05/30/evernote2/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!-- Duoshuo Comment END -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget about_me">
+  <h3 class="title">ABOUT ME</h3>
+  <ul class="entry">
+    
+    <li><img width="150" title="avatar" src="http://www.gravatar.com/avatar/d8708f776472330c6ced5f336cc1b3f8.png" /></li>
+    
+    
+    <li>微博：<a href="http://weibo.com/u/1651749981" target="_BLANK">@幻之神翼</a></li>
+    
+    <li>Github：<a href="https://github.com/fydx" target="_BLANK">fydx</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/算法/">算法</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/08/23/android事件机制相关/">android事件机制相关</a>
+      </li>
+    
+      <li>
+        <a href="/2014/06/06/sqlite/">Android sqlite 操作（单例sqlite helper）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/30/evernote2/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （二） 初步使用</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/28/evernote1/">Connect to Evernote - 印象笔记 Android SDK 使用日记 （一）</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/25/android监听来电状况/">android监听来电状况</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget duoshuo_recent_comments">
+  <h3 class="title">最新评论</h3>
+  <ul class="entry ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-title="1" data-show-time="1"></ul>
+</div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fydx"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+
+  
+<div class="widget links">
+  <h3 class="title">链接</h3>
+  <ul class="entry">
+    
+    <li><a href="http://fydx.cc" target="_BLANK">fydx&#39;s Blog</a></li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 fydx
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div style="display:none;">
+  <!-- 你的百度统计代码 -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0e8f59b5f6a4685006d013b89827075e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</div>
+
+</body>
+</html>
