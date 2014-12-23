@@ -262,30 +262,22 @@ ga('send', 'pageview');
 <p>一个点击事件会首先被传到onInterceptTouchEvent方法，这个方法是负责决定事件的传递方向的。onInterceptTouchEvent的返回值是boolean，如果return true，就意为着这个事件被自身消费掉，传导到自身的onTouchEvent而不传导到子控件。<br>在这个时候需要注意事件发生的顺序，在ACTION_MOVE之前一定会有ACTION_DOWN，如果在ACTION_DOWN的时候已经return，则对ACTION_MOVE里面写了事件处理，也不可能被触发</p>
 <p>那么，接下来有两种可能</p>
 <ol>
-<li><p>return true，事件被拦截，使用该View的onTouchEvent方法(没有被setOnTouchListener的情况)或者onTouchListener的onTouch方法(被setOnTouchListener的情况)</p>
-<ol>
+<li>return true，事件被拦截，使用该View的onTouchEvent方法(没有被setOnTouchListener的情况)或者onTouchListener的onTouch方法(被setOnTouchListener的情况)</li>
 <li>return false，事件未被拦截，传导到下面的View中去</li>
 </ol>
 <p>子View的onInterceptTouchEvent也会有响应，决定事件是否向下传递</p>
 <p>继续下去，事件可能就被最终的某个View上</p>
-</li>
-</ol>
 <h3 id="第二条路线：从上向下的事件响应机制">第二条路线：从上向下的事件响应机制</h3>
 <hr>
-<pre><code>第二条路线的关键是onTouch和onTouchEvent这两个方法：
-
-对于onTouch，我们要想写这个方法，首先需要对View setOnTouchListener，并对onTouchListsner的onTouch方法进行重载
-而对于onTouchEvent，我们是直接对View里面的这个方法进行重载的
-相比较而言，可以这么说：onTouchEvent是在内改，而onTouch是在外对View一个属性的修改
-
-在调用上，这两个方法都是在View的dispatchTouchEvent中被调用的，但是onTouch会优先于onTouch执行。
-
-而onTouch和onTouchEvent也都是有返回值的，<span class="keyword">true</span>意味着事件不再向下传导，自己消费，<span class="keyword">false</span>意味着事件继续向下传导，父View还可以继续响应。
-
-这也就意味着，如果onTouch返回<span class="keyword">true</span>，那么onTouchEvent将不再被响应。
-我们来看一下View的dispatchTouchEvent方法，可以看的更明显。
-
-    <span class="keyword">public</span> boolean <span class="title">dispatchTouchEvent</span>(MotionEvent <span class="keyword">event</span>) {  
+<p>第二条路线的关键是onTouch和onTouchEvent这两个方法：</p>
+<p>对于onTouch，我们要想写这个方法，首先需要对View setOnTouchListener，并对onTouchListsner的onTouch方法进行重载</p>
+<p>而对于onTouchEvent，我们是直接对View里面的这个方法进行重载的</p>
+<p>相比较而言，可以这么说：onTouchEvent是在内改，而onTouch是在外对View一个属性的修改</p>
+<p>在调用上，这两个方法都是在View的dispatchTouchEvent中被调用的，但是onTouch会优先于onTouch执行。</p>
+<p>而onTouch和onTouchEvent也都是有返回值的，true意味着事件不再向下传导，自己消费，false意味着事件继续向下传导，父View还可以继续响应。</p>
+<p>这也就意味着，如果onTouch返回true，那么onTouchEvent将不再被响应。</p>
+<p>我们来看一下View的dispatchTouchEvent方法，可以看的更明显。</p>
+<pre><code>    <span class="keyword">public</span> boolean <span class="title">dispatchTouchEvent</span>(MotionEvent <span class="keyword">event</span>) {  
                 <span class="keyword">if</span> (mInputEventConsistencyVerifier != <span class="keyword">null</span>) {  
                                 mInputEventConsistencyVerifier.onTouchEvent(<span class="keyword">event</span>, <span class="number">0</span>);  
                                         }  
