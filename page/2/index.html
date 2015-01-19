@@ -177,6 +177,122 @@ ga('send', 'pageview');
 </nav>
       
   
+    <article id="post-算法-动态规划相关" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2014/05/13/算法-动态规划相关/" class="article-date">
+  	<time datetime="2014-05-13T07:37:41.000Z" itemprop="datePublished">May 13 2014</time>
+</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/05/13/算法-动态规划相关/">算法-动态规划相关</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>动态规划是一种很长见的算法，经典的题目如LCS，LIS都会用到动态规划。</p>
+<p>动态规划的特点是，动态规划会存储上一个状态的值，用递推公式去推下一个状态，保存起来，最终来得到最优解。</p>
+<p>我们需要找到某个状态的最优解，推下去得到其他状态的最优解。</p>
+<p>我们来通过两个经典的背包问题来说明动态规划：</p>
+<h4 id="0-1背包问题">0-1背包问题</h4>
+<blockquote>
+<p>There are 5 items that have a value and weight list below, the knapsack can contain at most 100 Lbs</p>
+<p>values: 20 30 65 40 60</p>
+<p>weight: 10 20 30 40 50</p>
+<p>Solve the problem as 0/1 knapsack.</p>
+</blockquote>
+<p>0-1背包问题，就是有一个容量是V的背包，第i件的重量是w[i],价值是v[i],每个物品只能装一次，那么如何让背包能装的价值最大</p>
+<p>理论上这个问题也可以用贪心去解决，但是贪心不一定能得出来合适的解，我们使用动态规划来解决这个问题</p>
+<p>0-1背包，指的就是对于一个物品只有两个选择：放，或者不放</p>
+<p>动态规划需要明确两个方面：状态和状态转移方程</p>
+<p>我们使用f[i][v]表示前i个物品放入容量为v的背包可以获得的最大价值<br>f[i][v] 就是一个状态</p>
+<p>状态转移方程是：</p>
+<p>f[i][v] = max{f[i-1][v]，f[i-1][v-w[i]]+v[i]}</p>
+<p>f[i-1][v] 就是这个物品不放的情况下状态</p>
+<p>f[i-1][v-w[i]] + w[i] 就是在放这个物品的情况下的状态</p>
+<p>贴上代码，详情在注释中有体现：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> Main {
+<span class="comment">/* 容量 */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> V = <span class="number">100</span>;
+<span class="comment">/* 物品总数 */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> I = <span class="number">5</span>;
+<span class="comment">/* 各个物品的values */</span>
+<span class="keyword">int</span>[] values = {<span class="number">20</span>,<span class="number">30</span>,<span class="number">65</span>,<span class="number">40</span>,<span class="number">60</span>};
+<span class="comment">/* 各个物品的weight */</span>
+<span class="keyword">int</span>[] weight = {<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>,<span class="number">40</span>,<span class="number">50</span>};
+<span class="comment">/* 建立储存状态的二维数组 ，表示在V容量装前I个物品的价值，加了1是为了让数组下标I就是实际的件数，V就是实际的容量*/</span>
+<span class="keyword">int</span>[][] f = <span class="keyword">new</span> <span class="keyword">int</span>[I+<span class="number">1</span>][V+<span class="number">1</span>];
+
+<span class="keyword">public</span> <span class="keyword">int</span> <span class="title">knapSack</span>()
+{
+    <span class="comment">/* i代表装物品的件数，我们可以直接从1开始循环，因为i=0的时候没有意义（一个物品都不装，肯定价值是0）*/</span>
+    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=I;i++)
+    {
+        <span class="comment">/* j代表容量，容量是0的时候也没有意义，所以直接从1开始循环 */</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=V;j++) {
+                <span class="comment">/*如果我没有装的下这个物品的容量，那么和之前的价值是一样的*/</span>
+                <span class="keyword">if</span> (j &lt; weight[i-<span class="number">1</span>])
+                    f[i][j] = f[i][j - <span class="number">1</span>];
+                <span class="keyword">else</span>
+                    <span class="comment">/*我有了装的下这个物品的容量，那么我们就上我们的递归公式，在装和不装中取一个和谐的值 */</span>
+                    f[i][j] = max(f[i - <span class="number">1</span>][j], f[i - <span class="number">1</span>][j - weight[i-<span class="number">1</span>]] + values[i-<span class="number">1</span>]);
+                <span class="comment">/*测试输出每次的i,j,f */</span>
+                System.<span class="keyword">out</span>.print(<span class="string">"i:"</span> + i + <span class="string">" j:"</span> + j + <span class="string">" f:"</span> + f[i][j] + <span class="string">"\n"</span>);
+
+        }
+    }
+    <span class="comment">/* 返回最大值 */</span>
+    <span class="keyword">return</span> f[I][V];
+}
+<span class="comment">/* 取两个数大的那一个 */</span>
+<span class="keyword">public</span> <span class="keyword">int</span> <span class="title">max</span>(<span class="keyword">int</span> a,<span class="keyword">int</span> b)
+{
+    <span class="keyword">if</span> (a&lt; b )
+        <span class="keyword">return</span> b;
+    <span class="keyword">else</span>
+        <span class="keyword">return</span> a;
+}
+
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args)
+{
+    Main main = <span class="keyword">new</span> Main();
+    System.<span class="keyword">out</span>.print(main.knapSack());
+
+}
+}
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+
+
+  
     <article id="post-java接口相关" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -1107,54 +1223,9 @@ fruitList.<span class="built_in">add</span>(<span class="keyword">new</span> Fru
 
 
   
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2014/05/03/hello-world/" class="article-date">
-  	<time datetime="2014-05-03T13:42:58.000Z" itemprop="datePublished">May 3 2014</time>
-</a>
-      
-      
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/05/03/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="http://hexo.io" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs" target="_blank" rel="external">documentation</a> to learn how to use.</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -1162,7 +1233,7 @@ fruitList.<span class="built_in">add</span>(<span class="keyword">new</span> Fru
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2014 fydx
+    		&copy; 2015 fydx
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten

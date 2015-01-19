@@ -177,6 +177,144 @@ ga('send', 'pageview');
 </nav>
       
   
+    <article id="post-ios-coredata" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/01/19/ios-coredata/" class="article-date">
+  	<time datetime="2015-01-19T15:53:27.000Z" itemprop="datePublished">Jan 19 2015</time>
+</a>
+      
+      
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>title: iOS CoreData基本使用<br>date: 2015-01-19 23:31:13</p>
+<h2 id="tags:iOS_">tags:iOS </h2>
+<p>CoreData是一个在iOS下做持久层数据存储非常好用的方法，整个过程中无需SQL语句。</p>
+<h2 id="创建项目">创建项目</h2>
+<p>我创建一个名为“StoreSystem”的项目，注意下面要勾选“Use Core Data“</p>
+<p><img src="http://ww4.sinaimg.cn/large/6273b45dtw1enu28677oaj214k0nwgp4.jpg" alt="Use Core Data"></p>
+<h2 id="创建Model">创建Model</h2>
+<p>假设我们有三个数据Model类，Store(商场)，Department（部门），Staff（员工），具体属性如下图：</p>
+<p><img src="http://ww1.sinaimg.cn/large/6273b45dtw1enu2txfwafj20uw0lu784.jpg" alt="Model"></p>
+<p>我们在项目文件夹里面可以找到.xcdatamodeld的文件，点击进入后，我们创建Model的工作主要会在这里执行。</p>
+<!-- more !-->
+
+<p>在Xcode的下面我们可以找到“Add Entity”</p>
+<p><img src="http://ww2.sinaimg.cn/large/6273b45dtw1enu2p32znaj20v80ec3z4.jpg" alt="Add Entity"></p>
+<p>点击之后，在ENTITIES中会出现我们刚刚添加的Entity，可以添加属性，关系等等。我们在这里把三个Model都作为实体添加进去。</p>
+<p>Attributes很简单，设置属性名字，类型，点点鼠标就行。</p>
+<p>RelationShip可以定义实体之间的关系，比如部门是属于商店的，这是一个多对一的关系，可以在Store和Department的RelationShip中各创建一个关系，Store中Destination选择Department，Department中的Destination中选择Store，inverse选择对方实体的关系，这样子创建了一个双方的关系。</p>
+<p>可以在Xcode右边的选项卡中，在Store上创建的关系中选择 To Many，这样我们就创建了一个一对多的关系。</p>
+<p><img src="http://ww1.sinaimg.cn/large/6273b45dtw1enu3eyvooyj21hi0hc79i.jpg" alt="Relationship"></p>
+<p>同理，对Staff和Department再做一次添加一对多关系的处理。</p>
+<p>在Xcode下面的Editor Style中可以选择另外一种视图样式，在一个实体上面按Control，往另一个实体中拖，即可创建一个双方的关系，不过一对多还是需要手动去添加的。</p>
+<p>添加完关系之后，切换Editor Style，看到的图大概是这个样子的：</p>
+<p><img src="http://ww2.sinaimg.cn/large/6273b45dtw1enu3iyvihyj20oi0ledku.jpg" alt="RelationShip"></p>
+<p>OK，基本Model的创建基本结束。</p>
+<h2 id="创建数据Model类">创建数据Model类</h2>
+<p>在xcdatamodeld文件中我们创建好了数据模型之后，Xcode可以根据这个文件直接生成Objetctive-C的h和m文件</p>
+<p>我们选择File—New—File，选择iOS—Core Data 中的NSManagedObject subclass，生成我们所需的h和m文件</p>
+<p><img src="http://ww1.sinaimg.cn/large/6273b45dtw1enueosvae2j214k0nwgpq.jpg" alt="New File"></p>
+<p><img src="http://ww1.sinaimg.cn/large/6273b45dtw1enueq2djsnj214k0nwace.jpg" alt="Select Model"></p>
+<p>OK，接下来要做的就是实现增删改查这些数据库的基本功能了。</p>
+<h3 id="实现Store的“增“">实现Store的“增“</h3>
+<p>用Storyboard创建了一个简单的界面，按“确认添加”按钮，即为增加。</p>
+<p><img src="http://ww1.sinaimg.cn/large/6273b45dtw1enuhey2k8hj20jc0ust9r.jpg" alt="StoryBoard"></p>
+<p>核心“增”的方法如下：</p>
+<pre><code>- (void)saveStore
+{
+AppDelegate *<span class="variable">appDelegate =</span> [UIApplication sharedApplication].delegate;
+NSManagedObjectContext *<span class="variable">managedContext =</span> [appDelegate managedObjectContext];
+<span class="keyword">if</span> (managedContext != nil) {
+    <span class="keyword">if</span> (<span class="variable">_store =</span>= nil) {
+        <span class="variable">_store =</span> [NSEntityDescription insertNewObjectForEntityForName:@<span class="string">"Store"</span> inManagedObjectContext:managedContext];
+        <span class="keyword">if</span> (_nextId) {
+             _store.<span class="variable">storeId =</span> @(_nextId);
+        }
+
+    }
+    _store.<span class="variable">name  =</span> _nameTextField.text;
+    _store.<span class="variable">address =</span> _addressTextField.text;
+    _store.<span class="variable">number =</span> _numberTextField.text;
+    _store.<span class="variable">tel =</span> _telTextField.text;
+}
+[appDelegate saveContext];
+[self.navigationController popViewControllerAnimated:YES];
+
+}
+</code></pre><p>这里面，需要注意的是</p>
+<ul>
+<li>从AppDelegate中获取managedObjectContext</li>
+<li>用NSEntityDescription去获取要插入的对象（不能直接alloc init）</li>
+<li>saveContext，储存更改</li>
+</ul>
+<h3 id="读取数据">读取数据</h3>
+<pre><code>- (void)loadStores
+{
+<span class="constant">AppDelegate *appDelegate</span> = [UIApplication sharedApplication].delegate;
+<span class="constant">NSManagedObjectContext *managedContext</span> = appDelegate.managedObjectContext;
+<span class="comment">//指定数据表</span>
+<span class="constant">NSEntityDescription *entity</span> = [NSEntityDescription entityForName:@<span class="string">"Store"</span> inManagedObjectContext:managedContext];
+<span class="comment">//新建一个请求命令，相当于select</span>
+<span class="constant">NSFetchRequest *request</span> = [[NSFetchRequest alloc]init];
+<span class="comment">//request 指定数据表</span>
+[request setEntity:entity];
+<span class="comment">//错误描述</span>
+<span class="constant">NSError *error;
+//接收查询出来的数据
+NSArray *arr</span> = [managedContext executeFetchRequest:request error:&amp;error];
+<span class="constant">_stores</span> = [arr mutableCopy];
+
+}
+</code></pre><p>  在获取managedContext后，获取指定数据表，执行查询，获得全部的store。<br>   这里就是把所有的数据都读取出来了，我们对数据还可以进行筛选，再NSFetchRequest这里做文章，这里先不展开了。</p>
+<h3 id="删除数据">删除数据</h3>
+<pre><code>- (<span class="keyword">void</span>)deleteStoreAtIndex:(NSUInteger)index
+{
+AppDelegate *appDelegate = [<span class="built_in">UIApplication</span> sharedApplication]<span class="variable">.delegate</span>;
+NSManagedObjectContext *managedContext = [appDelegate managedObjectContext];
+[managedContext deleteObject:_stores[index]];
+<span class="built_in">NSError</span>* error = <span class="literal">nil</span>;
+[managedContext save:&amp;error];
+</code></pre><p>}</p>
+<p>这个也很简单，调用managedContext的deleteObject方法即可。</p>
+<h3 id="修改数据">修改数据</h3>
+<p>   这是CoreData非常爽的一个部分，我们在获取到一个store对象之后，直接对这个对象的属性进行修改，修改完毕后执行<code>[managedContext save]</code> 即可，我们的修改就持久化了。</p>
+<p>  Department和Staff的设定也大致相同。 </p>
+<h3 id="关于relationship">关于relationship</h3>
+<p>   我们在生成完了Store，Department，Staff这三个类之后，在Store和Department的h文件可以看到有几个多出来的方法，以Store类为例，再Store.h里面可以看到：</p>
+<pre><code><span class="pp">- <span class="params">(void)</span>addDepartmentsObject:<span class="params">(<span class="variable">Department</span> *)</span>value;
+- <span class="params">(void)</span>removeDepartmentsObject:<span class="params">(<span class="variable">Department</span> *)</span>value;
+- <span class="params">(void)</span>addDepartments:<span class="params">(<span class="variable">NSSet</span> *)</span>values;
+- <span class="params">(void)</span>removeDepartments:<span class="params">(<span class="variable">NSSet</span> *)</span>values;</span>
+</code></pre><p>因为有Relationship的存在，在Store里面还有一个属性<code>departments</code>，我们再创建Department的时候，调用<code>[store addDepartmentObject:xxxx]</code> ，即可把我们创建的Department和Store生成出来一条关系，我们的department便被加到Store的<code>departments</code>中。</p>
+<p>relationship是帮助我们来控制各个Entity之间的关系，有了它会更方便，但是也可以自己来通过其他的方式，比如用类似数据库的Foreign key等等的方式来控制。</p>
+<h3 id="总结">总结</h3>
+<p>iOS的CoreData框架使用实在是太方便了，相较于android各类ORM框架来说，由于有Apple加上的一层封装，使用起来实在是爽的飞起。但是由于Apple的的封闭框架，像自增id这种事情都没办法去做，自由度相对于android的ORM框架欠缺不少。</p>
+<p>总之，使用CoreData可以解决绝大多数的数据存储问题。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+
+
+  
     <article id="post-android事件机制相关" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -1083,125 +1221,9 @@ db.save(<span class="literal">user</span>)<span class="comment">;</span>
 
 
   
-    <article id="post-算法-动态规划相关" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2014/05/13/算法-动态规划相关/" class="article-date">
-  	<time datetime="2014-05-13T07:37:41.000Z" itemprop="datePublished">May 13 2014</time>
-</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/05/13/算法-动态规划相关/">算法-动态规划相关</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>动态规划是一种很长见的算法，经典的题目如LCS，LIS都会用到动态规划。</p>
-<p>动态规划的特点是，动态规划会存储上一个状态的值，用递推公式去推下一个状态，保存起来，最终来得到最优解。</p>
-<p>我们需要找到某个状态的最优解，推下去得到其他状态的最优解。</p>
-<p>我们来通过两个经典的背包问题来说明动态规划：</p>
-<h4 id="0-1背包问题">0-1背包问题</h4>
-<blockquote>
-<p>There are 5 items that have a value and weight list below, the knapsack can contain at most 100 Lbs</p>
-<p>values: 20 30 65 40 60</p>
-<p>weight: 10 20 30 40 50</p>
-<p>Solve the problem as 0/1 knapsack.</p>
-</blockquote>
-<p>0-1背包问题，就是有一个容量是V的背包，第i件的重量是w[i],价值是v[i],每个物品只能装一次，那么如何让背包能装的价值最大</p>
-<p>理论上这个问题也可以用贪心去解决，但是贪心不一定能得出来合适的解，我们使用动态规划来解决这个问题</p>
-<p>0-1背包，指的就是对于一个物品只有两个选择：放，或者不放</p>
-<p>动态规划需要明确两个方面：状态和状态转移方程</p>
-<p>我们使用f[i][v]表示前i个物品放入容量为v的背包可以获得的最大价值<br>f[i][v] 就是一个状态</p>
-<p>状态转移方程是：</p>
-<p>f[i][v] = max{f[i-1][v]，f[i-1][v-w[i]]+v[i]}</p>
-<p>f[i-1][v] 就是这个物品不放的情况下状态</p>
-<p>f[i-1][v-w[i]] + w[i] 就是在放这个物品的情况下的状态</p>
-<p>贴上代码，详情在注释中有体现：</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">class</span> Main {
-<span class="comment">/* 容量 */</span>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> V = <span class="number">100</span>;
-<span class="comment">/* 物品总数 */</span>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> I = <span class="number">5</span>;
-<span class="comment">/* 各个物品的values */</span>
-<span class="keyword">int</span>[] values = {<span class="number">20</span>,<span class="number">30</span>,<span class="number">65</span>,<span class="number">40</span>,<span class="number">60</span>};
-<span class="comment">/* 各个物品的weight */</span>
-<span class="keyword">int</span>[] weight = {<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>,<span class="number">40</span>,<span class="number">50</span>};
-<span class="comment">/* 建立储存状态的二维数组 ，表示在V容量装前I个物品的价值，加了1是为了让数组下标I就是实际的件数，V就是实际的容量*/</span>
-<span class="keyword">int</span>[][] f = <span class="keyword">new</span> <span class="keyword">int</span>[I+<span class="number">1</span>][V+<span class="number">1</span>];
-
-<span class="keyword">public</span> <span class="keyword">int</span> <span class="title">knapSack</span>()
-{
-    <span class="comment">/* i代表装物品的件数，我们可以直接从1开始循环，因为i=0的时候没有意义（一个物品都不装，肯定价值是0）*/</span>
-    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=I;i++)
-    {
-        <span class="comment">/* j代表容量，容量是0的时候也没有意义，所以直接从1开始循环 */</span>
-        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=V;j++) {
-                <span class="comment">/*如果我没有装的下这个物品的容量，那么和之前的价值是一样的*/</span>
-                <span class="keyword">if</span> (j &lt; weight[i-<span class="number">1</span>])
-                    f[i][j] = f[i][j - <span class="number">1</span>];
-                <span class="keyword">else</span>
-                    <span class="comment">/*我有了装的下这个物品的容量，那么我们就上我们的递归公式，在装和不装中取一个和谐的值 */</span>
-                    f[i][j] = max(f[i - <span class="number">1</span>][j], f[i - <span class="number">1</span>][j - weight[i-<span class="number">1</span>]] + values[i-<span class="number">1</span>]);
-                <span class="comment">/*测试输出每次的i,j,f */</span>
-                System.<span class="keyword">out</span>.print(<span class="string">"i:"</span> + i + <span class="string">" j:"</span> + j + <span class="string">" f:"</span> + f[i][j] + <span class="string">"\n"</span>);
-
-        }
-    }
-    <span class="comment">/* 返回最大值 */</span>
-    <span class="keyword">return</span> f[I][V];
-}
-<span class="comment">/* 取两个数大的那一个 */</span>
-<span class="keyword">public</span> <span class="keyword">int</span> <span class="title">max</span>(<span class="keyword">int</span> a,<span class="keyword">int</span> b)
-{
-    <span class="keyword">if</span> (a&lt; b )
-        <span class="keyword">return</span> b;
-    <span class="keyword">else</span>
-        <span class="keyword">return</span> a;
-}
-
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String[] args)
-{
-    Main main = <span class="keyword">new</span> Main();
-    System.<span class="keyword">out</span>.print(main.knapSack());
-
-}
-}
-</code></pre>
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="extend next" rel="next" href="/archives/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="page-number" href="/archives/page/3/">3</a><a class="extend next" rel="next" href="/archives/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -1209,7 +1231,7 @@ db.save(<span class="literal">user</span>)<span class="comment">;</span>
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2014 fydx
+    		&copy; 2015 fydx
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
